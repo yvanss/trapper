@@ -1,0 +1,16 @@
+{% extends "research/index.html" %}
+
+{% block data_app %}research::create{% endblock data_app %}
+
+{% block section_content %}
+  <div class="container">
+    <div class="col-md-6 col-md-offset-3">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h2 class="panel-title">{% if researchproject %}Update{% else %}Add{% endif %} research project</h2>
+        </div>
+        {% include 'research/project_form.html' %}
+      </div>
+    </div>
+  </div>
+{% endblock section_content %}

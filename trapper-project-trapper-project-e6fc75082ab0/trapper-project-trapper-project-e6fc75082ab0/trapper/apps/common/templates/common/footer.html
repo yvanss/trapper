@@ -1,0 +1,54 @@
+<!-- dirty ng-table hack -->
+<script type="text/ng-template" id="disable/pager">
+</script>
+
+<div class="panel-footer form-inline">
+
+  <div class="form-group">
+    Total: <strong>{[{ data.total }]}</strong> |
+    Filtered: <strong>{[{ data.pagination.count }]}</strong> | 
+    Selected <strong>{[{ data.selectedCounter }]}</strong>
+  </div>
+
+  <div class="btn-pagination">    
+    <!-- button: "first" -->
+    <button type="button" ng-disabled="data.pagination.page == 1 || data.pagination.pages < 2" ng-click="load(data.request.url, {page:1})" class="btn btn-default btn-sm">
+      <span class="fa fa-angle-double-left"></span>
+    </button>
+    <!-- button: "prev" -->
+    <button type="button" ng-disabled="data.pagination.page == 1 || data.pagination.pages < 2" ng-click="load(data.request.url, {page:data.pagination.page-1})" class="btn btn-default btn-sm">
+      <span class="fa fa-angle-left"></span>
+    </button>
+    <!-- input: "page number" -->
+    <div class="form-group ordered">
+      <input
+         type="text"
+         id="setPage"
+         class="form-control input-sm"
+         ng-disable="data.pagination.pages < 2"
+         ng-model="data.pagination.page"
+         ng-enter="load(data.request.url, {page:data.pagination.page})">
+      <label for="setPage"> </label>
+    </div>
+    <!-- button: "next" -->
+    <button type="button" ng-disabled="data.pagination.page == data.pagination.pages || data.pagination.pages < 2" ng-click="load(data.request.url, {page:data.pagination.page+1})" class="btn btn-default btn-sm">
+      <span class="fa fa-angle-right"></span>
+    </button>
+    <!-- button: "last" -->
+    <button type="button" ng-disabled="data.pagination.page == data.pagination.pages || data.pagination.pages < 2" ng-click="load(data.request.url, {page:data.pagination.pages})" class="btn btn-default btn-sm">
+      <span class="fa fa-angle-double-right"></span>
+    </button>
+  </div>
+
+  <div class="form-group pull-right">
+    <label for="pageSize">Page size</label>
+    <select
+       id="pageSize"
+       class="form-control input-sm"
+       ng-model="data.pagination.page_size"
+       ng-options="option as option for option in pageSizes"
+       ng-change="load(data.request.url, {page_size: data.pagination.page_size, page:1})">
+    </select>
+  </div>
+
+</div>

@@ -1,0 +1,10 @@
+{% load crispy_forms_tags %}
+
+{% url 'storage:collection_update' object.pk as collection_url %}
+
+<form action="{{ collection_url }}" method='post' class="panel-body">
+  {% crispy form form.helper %}
+  <fieldset>
+    <button type="submit" class="btn btn-primary">Update collection</button>
+  </fieldset>
+</form>

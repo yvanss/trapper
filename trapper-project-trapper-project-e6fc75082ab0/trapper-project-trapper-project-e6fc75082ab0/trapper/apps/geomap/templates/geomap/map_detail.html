@@ -1,0 +1,58 @@
+{% extends "geomap/basemap.html" %}
+
+{% load leaflet_storage_tags %}
+{% load geomap_tags %}
+{% load staticfiles %}
+
+{% block title %}{{ map.name }}{% endblock %}
+{% block body_class %}map_detail{% endblock %}
+
+{% block header %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static "storage/reqs/leaflet/leaflet.css" %}" />
+<link rel="stylesheet" href="{% static "storage/reqs/markercluster/MarkerCluster.css" %}" />
+<link rel="stylesheet" href="{% static "storage/reqs/markercluster/MarkerCluster.Default.css" %}" />
+<link rel="stylesheet" href="{% static "storage/reqs/editinosm/Leaflet.EditInOSM.css" %}" />
+<link rel="stylesheet" href="{% static "storage/reqs/minimap/Control.MiniMap.css" %}" />
+<link rel="stylesheet" href="{% static "storage/reqs/contextmenu/leaflet.contextmenu.css" %}" />
+<link rel="stylesheet" href="{% static "storage/reqs/label/leaflet.label.css" %}" />
+<link rel="stylesheet" href="{% static "storage/reqs/toolbar/leaflet.toolbar.css" %}" />
+<link rel="stylesheet" href="{% static "storage/reqs/measurable/Leaflet.Measurable.css" %}" />
+<link rel="stylesheet" href="{% static "storage/src/css/storage.css" %}" />
+<link rel="stylesheet" href="{% static "storage/contrib/css/storage.ui.default.css" %}" />
+<link rel="stylesheet" href="{% static "umap/umap.css" %}" />
+
+<link type="text/css" href="{% static "bootstrap/css/bootstrap.css" %}"  media="all" rel="stylesheet" />
+<link type="text/css" href="{% static "geomap/css/geomap.css" %}"  media="all" rel="stylesheet" />
+
+<script type="text/javascript" src="{% static "jquery/jquery-2.1.0.min.js" %}"></script>
+<script type="text/javascript" src="{% static "jquery/jquery.deserialize.min.js" %}"></script>
+
+{% geomap_leaflet_storage_js locale=locale %}
+<script src="{% static "js/vendor.js" %}"></script>
+<script type="text/javascript" src="{% static "geomap/js/leaflet.storage.monkey_patches.js" %}"></script>
+<script type="text/javascript" src="{% static "geomap/js/filterlocationscontrol.js" %}"></script>
+<script type="text/javascript" src="{% static "geomap/js/trappermarkercontrol.js" %}"></script>
+<script type="text/javascript" src="{% static "geomap/js/geomap.js" %}"></script>
+<script type="text/javascript" src="{% static "utk/utk.min.js" %}"></script>
+<script type="text/javascript" src="{% static "list/list.min.js" %}"></script>
+
+<script type="text/javascript">
+    var object = "{{ object }}";
+  var classification_projects = [
+      {% for cp in classification_projects %}
+      {
+          id: {{cp.id}},
+          name: '{{cp.name}}'
+      },
+      {% endfor %}
+  ];
+</script>
+{% endblock %}
+
+{% block content %}
+{% block map_init %}
+{% include "geomap/map_init.html" %}
+{% endblock %}
+{% include "geomap/map_messages.html" %}
+{% endblock %}

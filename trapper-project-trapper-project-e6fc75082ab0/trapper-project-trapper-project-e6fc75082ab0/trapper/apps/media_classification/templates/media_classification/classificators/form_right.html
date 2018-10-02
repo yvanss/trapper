@@ -1,0 +1,19 @@
+{% load crispy_forms_tags %}
+
+
+<h3 class="collapsable active">Define custom attribute</h3>
+
+<div>
+    {% crispy custom_form custom_form.helper %}
+    <button type="submit" class="btn btn-success" name="custom_attrs_manage">Add / Update</button>
+    <button type="button" class="btn btn-default" data-clear>Clear</button>
+</div>
+
+<h3 class="collapsable">Choose pre-defined attribute</h3>
+<ul class="panel-list">
+    {% crispy predefined_form predefined_form.helper %}
+</ul>
+
+
+
+

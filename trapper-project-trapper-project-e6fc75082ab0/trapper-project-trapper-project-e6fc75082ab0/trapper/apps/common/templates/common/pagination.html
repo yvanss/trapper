@@ -1,0 +1,18 @@
+{% if is_paginated %}
+<div class="panel-footer form-inline">
+  <div class="btn-pagination">
+    <a href="?{{ a_href_prefix }}page=1" class="btn btn-default btn-sm"><span class="fa fa-angle-double-left"></span></a>
+    {% if page_obj.has_previous %}
+    <a href="?{{ a_href_prefix }}page={{ page_obj.previous_page_number }}" class="btn btn-default btn-sm"><span class="fa fa-angle-left"></span></a>
+    {% endif %}
+    <div class="form-group">
+      <input type="text" id="page" class="form-control input-sm" value="{{ page_obj.number }}">
+      <label for="page">/ {{ page_obj.paginator.num_pages }}</label>
+    </div>
+    {% if page_obj.has_next %}
+    <a href="?{{ a_href_prefix }}page={{ page_obj.next_page_number }}" class="btn btn-default btn-sm"><span class="fa fa-angle-right"></span></a>
+    {% endif %}
+    <a href="?{{ a_href_prefix }}page={{ page_obj.paginator.num_pages }}" class="btn btn-default btn-sm"><span class="fa fa-angle-double-right"></span></a>
+  </div>
+</div>
+{% endif %}

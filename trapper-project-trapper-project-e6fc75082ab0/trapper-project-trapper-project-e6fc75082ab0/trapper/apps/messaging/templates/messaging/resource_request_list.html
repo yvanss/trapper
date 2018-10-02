@@ -1,0 +1,58 @@
+{% extends "messaging/index.html" %}
+
+{% block messaging_resource_request %}primary{% endblock %}
+{% block data_app %}message::preview{% endblock %}
+
+{% block section_content %}
+
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h2 class="panel-title">Messages</h2>
+    </div>
+
+    {% if resource_requests %}
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Sender</th>
+          <th>Message</th>
+          <th>Resource</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+
+      <tbody>
+      {% for resource_request in resource_requests %}
+        <tr>
+          <td><a href="{{ resource_request.message.user_from.userprofile.get_absolute_url }}">{% pretty_username resource_request.message.user_from %}</a></td>
+          <td><a href="{{ resource_request.message.get_absolute_url }}" >View Message</a></td>
+          <td>
+            {% for resource in resource_request.resources.all %}
+              <a href="{% url "storage:resource_detail" resource.pk %}">{{ resource.name }}</a>
+            {% endfor %}
+          </td>
+
+          <td>
+            {% if resource_request.resolved_at %}
+              {% if resource_request.is_approved %}<b class="text-green">Approved</b>{% else %}<b class="text-red">Rejected</b>{% endif %} at {{ resource_request.resolved_at|date:"d.m.Y, H:i" }}
+            {% else %}
+              <button type="button" class="btn btn-link" data-resolve="{% url 'messaging:resource_request_resolve' resource_request.pk %}" data-type="collection">Resolve</button>
+            {% endif %}
+            {% if resource_request.is_approved %}
+            <p><button type="button" class="btn btn-link" data-revoke="{% url 'messaging:resource_request_revoke' resource_request.pk %}" data-type="collection">Revoke</button></p>
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    {% include 'common/pagination.html' %}
+
+    {% else %}
+      <div class="alert alert-warning ng-binding">
+        <span class="fa fa-info"></span> No resource requests available.
+      </div>
+    {% endif %}
+  </div>
+
+{% endblock section_content %}

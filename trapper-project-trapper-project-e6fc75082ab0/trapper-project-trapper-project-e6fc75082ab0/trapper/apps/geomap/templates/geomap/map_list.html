@@ -1,0 +1,10 @@
+{% extends "geomap/index.html" %}
+
+{% block ng_app %}ng-app="trapperGrid"{% endblock ng_app %}
+
+{% block section_content %}
+    {% with grid_context=map_context %}
+    {% include 'geomap/map_grid.html' %}
+    {% endwith %}
+{% endblock section_content %}
+

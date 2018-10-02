@@ -1,0 +1,35 @@
+{% load crispy_forms_tags %}
+
+<div class="form-group">
+    {{ projectrole_formset.management_form }}
+    <table class="table table-form table-repeatable" data-name="project_roles">
+      <thead>
+      <th>Username</th>
+      <th>Role</th>
+      <th>Action</th>
+      </thead>
+      <tbody>
+      {% for form in projectrole_formset.forms %}
+        <tr>
+          <td>
+            {{ form.id }}
+            {{ form.user|as_crispy_field }}
+          </td>
+          <td>{{ form.name|as_crispy_field }}</td>
+          <td>{% if form.instance.pk %}
+            <span style="display: none;">
+            {{ form.DELETE }}
+            </span>
+            <button type="button" class="btn btn-danger btn-remove-row ">
+              <span class="fa fa-remove"></span>
+            </button>
+          {% else %}
+            <button type="button" class="btn btn-success btn-add-row">
+              <span class="fa fa-plus"></span>
+            </button>
+          {% endif %}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+</div>

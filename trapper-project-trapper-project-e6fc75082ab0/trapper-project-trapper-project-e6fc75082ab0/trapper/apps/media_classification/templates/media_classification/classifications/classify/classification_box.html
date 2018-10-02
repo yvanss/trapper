@@ -1,0 +1,80 @@
+{% if user_classifications %}
+<table class="table classification-box">
+  <tbody>
+    {% if classification.status %}
+    <tr>
+      <td colspan="3"><h4>This resource has classification <strong>approved</strong> by</h4></td>
+    </tr>
+    <tr class="success">
+      <td>
+	<span class="fa fa-user"></span>
+	<a href="{% url 'accounts:show_profile' classification.approved_by.username %}">
+	  {{ classification.approved_by|pretty_username }}
+	</a> at 
+	{{ classification.approved_at|date:"d.m.Y H:i:s" }}
+	<br> The source (user) classification is marked in green below.
+      </td>
+      <td>
+	{% if classification.approved_at < classification.approved_source.updated_at %}
+	<action-warning ng-click="execute($event, 'The source classification (by <strong>{{ classification.approved_source.owner|pretty_username }}</strong>) was changed. Consider approving it one more time.')"></action-warning>
+	{% endif %}					   
+      </td>
+    </tr>
+    {% else %}
+    <tr>
+      <td colspan="3"><h4>This resource has no approved classification yet</h4></td>
+    </tr>
+    {% endif %}
+  </tbody>
+</table>
+
+<table class="table classification-box">
+  <thead>
+    <tr>
+      <td colspan="3"><h4>User classifications</h4></td>
+    </tr>
+  <tr>
+    <th>User</th>
+    <th>Date updated</th>
+    <th>Actions</th>
+  </tr>
+  </thead>
+
+  <tbody>
+  {% for classification_item in user_classifications %}
+    <tr {% if classification.approved_source.pk == classification_item.pk %} class="success" {% endif %}{% if classification_item.pk == user_classification.pk %} style="border: 3px solid; border-color: green; border-right: 0 none; border-left: 0 none;"{% endif %}>
+      <td>
+        <span class="fa fa-user"></span>
+	<a href="{% url 'accounts:show_profile' classification_item.owner.username %}">{{ classification_item.owner|pretty_username }}</a>
+      </td>
+      <td>{{ classification_item.updated_at|date:"d.m.Y H:i:s" }}</td>
+      <td>
+        {% if classification_item.can_view %}
+        <a href="{% url 'media_classification:classification_detail' pk=classification_item.pk %}" class="btn btn-xs btn-default" title="Display"><span class="fa fa-search"></span></a>
+        {% endif %}
+
+        {% if classification_item.can_update %}
+        <a href="{% url 'media_classification:classify_user' pk=classification.pk user_pk=classification_item.owner.pk %}" class="btn btn-xs btn-default" title="Update"><span class="fa fa-pencil"></span></a>
+        {% endif %}
+
+        {% if classification.can_approve %}
+        <a href="{% url 'media_classification:classify_approve' pk=classification_item.pk %}" class="btn btn-xs btn-primary btn-approve" title="Approve"><span class="fa fa-check"></span></a>
+        {% endif %}
+      </td>
+    </tr>
+  {% endfor %}
+</tbody>
+</table>
+
+{% if classification.status and not request_user_classification %}
+<h4 style="padding-left: 15px">You can still add 
+  <a href="{% url 'media_classification:classify' pk=classification.pk %}?add_my_classification=True">
+    your own classification.
+  </a>
+</h4>
+{% endif %}
+
+
+{% else %}
+  <div class="alert alert-warning ng-binding"><span class="fa fa-info"></span> This resource has not been classified yet.</div>
+{% endif %}

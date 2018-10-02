@@ -1,0 +1,73 @@
+type: map
+mapping:
+  "collections":
+    type: seq
+    sequence:
+      - type: map
+        mapping: 
+          "name":
+            type: str
+            required: yes
+          "resources_dir":
+            type: str
+            required: yes
+          "project_name":
+            type: str
+            required: no
+          "managers":
+            type: seq
+            required: no
+            sequence:
+              - type: map
+                mapping:
+                  "username":
+                    type: str
+                    required: yes
+          "deployments":
+            type: seq
+            required: no
+            sequence:
+              - type: map
+                mapping:
+                  "deployment_id":
+                    type: str
+                    required: yes
+                  "resources":
+                    type: seq
+                    required: no
+                    sequence:
+                      - type: map
+                        mapping:
+                          "name":
+                            type: str
+                            required: yes
+                          "file":
+                            type: str
+                            required: yes
+                          "extra_file":
+                            type: str
+                            required: no
+                          "date_recorded":
+                            type: str
+                            required: yes
+          "resources":
+            type: seq
+            required: no
+            sequence:
+              - type: map
+                mapping:
+                 "name":
+                   type: str
+                   required: yes
+                 "file":
+                   type: str
+                   required: yes
+                 "extra_file":
+                   type: str
+                   required: no
+                 "date_recorded":
+                   type: str
+                   required: yes
+
+
+

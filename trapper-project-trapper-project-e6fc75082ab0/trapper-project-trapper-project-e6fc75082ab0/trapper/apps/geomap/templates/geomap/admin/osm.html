@@ -1,0 +1,132 @@
+{% block extrastyle %}
+    {% load static %}
+    <style type="text/css">
+        #{{ id }}_map {
+            width: {{ map_width }}px;
+            height: {{ map_height }}px;
+        }
+
+        #{{ id }}_map .aligned label {
+            float: inherit;
+        }
+
+        #{{ id }}_admin_map {
+            z-index: 1;
+            position: relative;
+            vertical-align: top;
+            float: {{ LANGUAGE_BIDI|yesno:"right,left" }};
+        }
+
+        {% if not display_wkt %}#{{ id }} { display: none; }{% endif %}
+
+        .olControlEditingToolbar .olControlModifyFeatureItemActive {
+            background-image: url("{% static "admin/img/gis/move_vertex_on.png" %}");
+            background-repeat: no-repeat;
+        }
+
+        .olControlEditingToolbar .olControlModifyFeatureItemInactive {
+            background-image: url("{% static "admin/img/gis/move_vertex_off.png" %}");
+            background-repeat: no-repeat;
+        }
+    </style>
+    <!--[if IE]>
+<style type="text/css">
+  /* This fixes the mouse offset issues in IE. */
+  #{{ id }}_admin_map { position: static; vertical-align: top; }
+  /* `font-size: 0` fixes the 1px border between tiles, but borks LayerSwitcher.
+      Thus, this is disabled until a better fix is found.
+  #{{ id }}_map { width: {{ map_width }}px; height: {{ map_height }}px; font-size: 0; } */
+</style>
+<![endif]-->
+{% endblock %}
+<span id="{{ id }}_admin_map">
+<script type="text/javascript">
+    //<![CDATA[
+    {% block openlayers %}{% include "gis/admin/osm.js" %}{% endblock %}
+    //]]>
+</script>
+<script type="text/javascript">
+
+    {{ module }}.textFieldChanged = function () {
+        var lat = document.getElementById('{{ id }}_lat').value;
+        var lng = document.getElementById('{{ id }}_lon').value;
+        if (lat == "" || lng == "") {
+            return
+        }
+        var lonLat = new OpenLayers.LonLat(lng, lat);
+        lonLat.transform(new OpenLayers.Projection("EPSG:4326"),{{module}}.map.getProjectionObject()
+        )
+        ;
+        if ({{module}}.
+        layers.vector.features[0]
+        )
+        {
+            {{module}}.
+            layers.vector.features[0].move(lonLat);
+            {{module}}.
+            map.setCenter(lonLat);
+            {{module}}.
+            write_wkt({{module}}.layers.vector.features[0]
+        )
+            ;
+        }
+        else
+        {
+            var point = new OpenLayers.Geometry.Point(lonLat.lon, lonLat.lat);
+            var feat = new OpenLayers.Feature.Vector(point);
+            {{module}}.
+            layers.vector.addFeatures([feat]);
+            {{module}}.
+            map.setCenter(lonLat);
+            {{module}}.
+            write_wkt({{module}}.layers.vector.features[0]
+        )
+            ;
+            {{module}}.
+            map.zoomTo(14);
+        }
+    };
+
+    {{ module }}.update_text = function (event) {
+        var point = event.feature.geometry.clone();
+        point.transform({{module}}.map.getProjectionObject(), new OpenLayers.Projection("EPSG:4326")
+        )
+        ;
+        document.getElementById('{{ id }}_lat').value = point.y;
+        document.getElementById('{{ id }}_lon').value = point.x;
+    }
+            {{ module }}.init2 = function () {
+        if ({{module}}.
+        layers.vector.features[0]
+        )
+        {
+            var point =
+            {{module}}.
+            layers.vector.features[0].geometry.clone();
+            point.transform({{module}}.map.getProjectionObject(), new OpenLayers.Projection("EPSG:4326")
+        )
+            ;
+            document.getElementById('{{ id }}_lat').value = point.y;
+            document.getElementById('{{ id }}_lon').value = point.x;
+        }
+        {{ module }}.
+        layers.vector.events.on({"featuremodified":{{ module }}.update_text
+    }
+    )
+    ;
+    {{ module }}.layers.vector.events.on({"featureadded":{{ module }}.update_text
+    })
+    ;
+    }
+    ;
+
+</script>
+<label>Lattitude: </label><input id="{{ id }}_lat" class="required" onchange="{{ module }}.textFieldChanged()">
+<label>Longitude: </label><input id="{{ id }}_lon" class="required" onchange="{{ module }}.textFieldChanged()"><br/>
+<div id="{{ id }}_map"{% if LANGUAGE_BIDI %} dir="ltr"{% endif %}></div>
+<a href="javascript:{{ module }}.clearFeatures()">Delete all Features</a>
+    {% if display_wkt %}<p> WKT debugging window:</p>{% endif %}
+    <textarea id="{{ id }}" class="vWKTField required" cols="150" rows="10" name="{{ name }}">{{ wkt }}</textarea>
+<script type="text/javascript">{% block init_function %}{{ module }}.init();
+{{ module }}.init2();{% endblock %}</script>
+</span>

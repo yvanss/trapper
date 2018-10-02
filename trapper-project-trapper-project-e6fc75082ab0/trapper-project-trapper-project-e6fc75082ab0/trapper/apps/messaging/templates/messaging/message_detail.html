@@ -1,0 +1,33 @@
+{% extends "messaging/index.html" %}
+
+{% block messaging_message_inbox %}{% if message.is_inbox %}primary{% else %}default{% endif %}{% endblock %}
+{% block messaging_message_outbox %}{% if message.is_outbox %}primary{% else %}default{% endif %}{% endblock %}
+{% block messaging_collection_request %}{% if message.is_collection_request %}primary{% else %}default{% endif %}{% endblock %}
+{% block messaging_resource_request %}{% if message.is_resource_request %}primary{% else %}default{% endif %}{% endblock %}
+
+{% block data_app %}message::preview{% endblock %}
+
+{% block section_content %}
+  {% with message.user_from as sender %}
+  {% with sender.userprofile.get_absolute_url as sender_profile %}
+
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h2 class="panel-title">Title: <strong>{{ message.subject|safe }}</strong></h2>
+    </div>
+
+    <div class="panel-body">
+      {{ message.text|safe}}
+    </div>
+
+    <div class="panel-footer">
+      Sender: <strong><a href="{{ sender_profile }}">{% pretty_username sender %}</a></strong>
+    </div>
+    <div class="panel-footer">
+      Date: <strong>{{ message.date_sent|date:"d.m.Y, H:i" }}</strong>
+    </div>
+  </div>
+
+  {% endwith %}
+  {% endwith %}
+{% endblock section_content %}

@@ -1,0 +1,18 @@
+{% load crispy_forms_tags %}
+
+
+<div class="panel panel-default">
+  {% if show_header %}
+  <div class="panel-heading">
+    <h2 class="panel-title">Comment</h2>
+  </div>
+  {% endif %}
+
+  <form method="post" action="{% url 'comments:comment_create' %}" class="panel-body">
+    {% crispy form form.helper %}
+
+    <fieldset>
+      <button type="submit" class="btn btn-primary"><span class="fa fa-share"></span> Post</button>
+    </fieldset>
+  </form>
+</div>

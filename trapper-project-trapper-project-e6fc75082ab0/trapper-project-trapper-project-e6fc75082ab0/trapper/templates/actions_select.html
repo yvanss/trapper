@@ -1,0 +1,22 @@
+{% load i18n %}
+<div class="form-group">
+<div class="controls ">
+<select name="action" id="id_action" class="select form-control">
+    <option value="-1">--------</option>
+    {% for action, attrs in actions %}
+        <option {% if attrs.class %}class="{{attrs.class}}"{% endif %} value="{{ forloop.counter }}"> {{ action }}</option>
+    {% endfor %}
+</select>
+</div>
+</div>
+<button class="btn btn-default" type="submit"> Run action</button>
+<a href="#" onclick="selectAll()">select all ({{ paginator.count }})</a>
+<input type="hidden" value="{{ paginator.count }}" name="all-items-count">
+<input id="select-across" type="hidden" value="0" name="select-across">
+
+<script type="text/javascript">
+    var selectAll = function() {
+	$('#select-across').val(1);
+    }
+</script>
+

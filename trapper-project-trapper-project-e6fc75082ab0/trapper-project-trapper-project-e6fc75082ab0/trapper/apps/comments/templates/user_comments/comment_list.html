@@ -1,0 +1,51 @@
+
+{% load mptt_tags %}
+
+<div class="panel panel-default">
+{% if show_header %}
+  <div class="panel-heading">
+    <h2 class="panel-title">This media file has <span class="badge">{{ nodes.count }}</span> comments</h2>
+  </div>
+{% endif %}
+{% if nodes %}
+  <div class="panel-body">
+
+    {% recursetree nodes %}
+      <div class="media {% if node.parent_id %}media-response{% endif %}" data-pk="{{ node.pk }}">
+        {% if node.user %}
+          <a href="{% url 'accounts:show_profile' node.user.username %}" class="media-left"><img src="{{ node.user.userprofile.avatar_url }}" alt="{{ node.user|pretty_username }}"></a>
+        {% else %}
+          <span class="media-left"><img src="{{ STATIC_URL }}accounts/img/avatar.png" alt="Guest"></span>
+        {% endif %}
+
+        <div class="media-body">
+          <div class="media-heading">
+            <span class="fa fa-user"></span>
+            {% if node.user %}
+              <a href="{% url 'accounts:show_profile' node.user.username %}">{{ node.user|pretty_username }}</a>
+            {% else %}
+              <span>Guest</span>
+            {% endif %}
+            <time>{{ node.submit_date|date:"H:i @ d.m.Y" }}</time>
+            {% if not node.parent_id and not readonly %}
+              <span class="fa fa-reply"></span>
+              <button type="button" class="btn btn-link btn-reply">Reply</button>
+            {% endif %}
+          </div>
+
+          <p>{{ node.comment|safe }}</p>
+        </div>
+
+        {% if node.content_object.can_remove_comment and not readonly%}
+        <a class="btn btn-danger" href="{% url 'comments:comment_delete' node.pk %}"><span class="fa fa-remove"></span></a>
+        {% endif %}
+      </div>
+      {% if not node.is_leaf_node %}
+            {{ children }}
+      {% endif %}
+    {% endrecursetree %}
+  </div>
+{% else %}
+  <div class="alert alert-warning ng-binding"><span class="fa fa-info"></span> There are no comments.</div>
+{% endif %}
+</div>

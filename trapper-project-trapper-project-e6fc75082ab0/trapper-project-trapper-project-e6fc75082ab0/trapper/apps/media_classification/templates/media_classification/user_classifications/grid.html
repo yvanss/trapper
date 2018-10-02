@@ -1,0 +1,145 @@
+{% extends "common/grid.html" %}
+
+{% block breadcrumbs %}
+<div class="row">
+  <div class="col-md-12">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h2 class="panel-title">
+        <span class="fa fa-flask"></span> <a href="{% url 'research:project_detail' pk=grid_context.project.research_project.pk %}">{{ grid_context.project.research_project.acronym }}</a> >
+        <span class="fa fa-cubes"></span> <a href="{% url 'media_classification:project_detail' pk=grid_context.project.pk %}">{{ grid_context.project.name }}</a> > <strong>Users' classifications</strong>
+      </h2>
+    </div>
+  </div>
+</div>
+</div>
+{% endblock %}
+
+{% block filters %}
+
+<div class="form-group form-filter">
+  <label for="approved" class="control-label">Approved</label>
+  <select
+     id="approved"
+     class="form-control"
+     filter-text="approved"
+     filter-service="filter"
+     ng-model="filters.approved"
+     ng-options="option.value as option.label for option in optionList.bool">
+  </select>
+</div>
+
+<div class="form-group form-filter-fill">
+  <label for="users" class="control-label">Users</label>
+  <select
+     type="text"
+     id="users"
+     class="select2-default"
+     multiple
+     ng-model="filters.user"
+     filter-tokens="resource.user_id"
+     filter-service="filter">
+    {% for user in grid_context.users %}
+    <option value="{{ user.0 }}">{{ user.1 }}</option>
+    {% endfor %}
+  </select>
+</div>
+
+<div class="form-group form-filter-full">
+  <label for="collections" class="control-label">Collections</label>
+  <select
+     type="text"
+     id="collection"
+     class="select2-default"
+     multiple
+     ng-model="filters.collection"
+     filter-tokens="collection.name"
+     filter-service="filter">
+    {% for collection in grid_context.collections %}
+    <option value="{{ collection.0 }}">{{ collection.1 }}</option>
+    {% endfor %}
+  </select>
+</div>
+
+<div class="form-group form-filter-full">
+  <label for="deployments" class="control-label">Deployments</label>
+  <select
+     type="text"
+     id="deployments"
+     class="select2-default"
+     multiple
+     ng-model="filters.deployment"
+     filter-tokens="resource.deployment_id"
+     filter-service="filter">
+    {% for deployment in grid_context.deployments %}
+    <option value="{{ deployment.0 }}">{{ deployment.1 }}</option>
+    {% endfor %}
+  </select>
+</div>
+
+{% endblock %}
+
+{% block my_objects %}
+{% if user.is_authenticated %}
+<button
+   type="button"
+   class="btn btn-default"
+   ng-class="{ active: filters.owner }"
+   ng-model="filters.owner"
+   ng-init="filters.owner = false"
+   ng-click="filterOwner()"
+   filter-checkbox="{ name: 'owner', value: '{{ user.pk }}' }"
+   filter-service="filter">My classifications</button>
+{% endif %}
+{% endblock %}
+
+{% block custom_actions_list %}
+
+{% if grid_context.is_admin %}
+<li>
+  <action-approve-selected ng-click="execute($event, '{% url "media_classification:user_classification_bulk_approve" pk=grid_context.project.pk %}')">
+  </action-approve-selected>
+</li>
+<!-- <li> -->
+<!--   <action-remove-selected ng-click="execute($event, '{% url "media_classification:classification_delete_multiple" %}')"> -->
+<!--   </action-remove-selected> -->
+<!-- </li> -->
+{% endif %}
+{% endblock%}
+
+{% block table_cells %}
+
+<td data-title="'Thumbnail'"><action-media ng-click="execute($event, record)"><img ng-src="{[{ record.resource.thumbnail_url }]}"></action-media></td>
+<td data-title="'Type'" sortable="'resource.resource_type'" ng-bind-html="record.resource.resource_type | typesIcon"></td>
+<td data-title="'Name'" sortable="'resource.name'">{[{ record.resource.name }]}</td>
+<td data-title="'User'" sortable="'owner'"><a ng-href="{[{ record.owner_profile }]}">{[{ record.owner }]}</a></td>
+<td data-title="'Updated'">{[{ record.updated_at | dateTZ: dateFormat.table }]}</td>
+<td data-title="'Approved'" ng-bind-html="record.approved | classifiedIcons"></td>
+<td data-title="'Attributes'">
+  <h6>Static attributes:</h6>
+  <div class="tags-list">
+    <span 
+       ng-repeat="(label, tag) in record.static_attrs" 
+       ng-if="label != 'comments' && label != 'annotations'"
+       class="label label-success">{[{ label }]}: {[{ tag }]}
+    </span>
+  </div>
+  <h6>Dynamic attributes:</h6>
+  <div class="tags-list" ng-repeat="dynamic_attr in record.dynamic_attrs" ng-init="tagIndex = $index">
+    <span
+       ng-repeat="(label, tag) in dynamic_attr"
+       ng-if="label != 'comments' && label != 'annotations'"
+       class="label" title="{[{ tag }]}"
+       ng-class="{'label-default': tagIndex % 2 == 0, 'label-success': tagIndex % 2 != 0}">{[{ label }]}: {[{ tag }]}</span>
+  </div>
+</td>
+
+{% endblock %}
+
+{% block table_cells_extra_actions %}
+<action-user-classification-details
+   ng-click="execute($event, record,
+             {{grid_context.project.deployment_based_nav|yesno:'true,false'}})">
+</action-classify>
+{% endblock %}
+

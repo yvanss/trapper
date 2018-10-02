@@ -1,0 +1,33 @@
+{% verbatim %}
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3 class="modal-title" id="myModalLabel">
+	  <div ng-bind-html="modal_form_header"></div>
+	</h3>
+      </div>
+      <div class="modal-body">
+	<div class="alert alert-{{msg_alert}}" ng-show="msg_txt"><strong>{{msg_txt}}</strong></div>
+	<div class="">
+	  <form action="#" class="" novalidate>
+	    <div id="modal-form-div">
+	    </div>
+	</div>
+      </div>
+      <div class="modal-footer">
+	<div class="navbar-left" style="font-size:22px;" ng-show="form_with_selections">
+	  <span> Selected items: <strong>{{mySelections.length}}</strong></span>
+	</div>
+	<button type="button" class="btn btn-default" ng-click="submit_function()" ng-disabled="form.$invalid">Submit</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+      </form>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+{% endverbatim %}
+ 
+
+

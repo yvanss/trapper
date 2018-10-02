@@ -1,0 +1,11 @@
+{% extends "media_classification/index.html" %}
+
+{% load common_tags %}
+
+{% block ng_app %}ng-app="trapperGrid"{% endblock ng_app %}
+
+{% block section_content %}
+    {% with grid_context=classification_context %}
+    {% include 'media_classification/classifications/grid.html' %}
+    {% endwith %}
+{% endblock section_content %}

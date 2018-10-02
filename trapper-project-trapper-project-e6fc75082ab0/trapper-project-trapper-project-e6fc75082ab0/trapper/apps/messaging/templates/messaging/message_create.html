@@ -1,0 +1,37 @@
+{% extends "messaging/index.html" %}
+{% block messaging_message_create %}primary{% endblock %}
+{% block data_app %}message::new{% endblock %}
+
+{% block section_content %}
+  <div class="col-md-6 col-md-offset-3">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h2 class="panel-title">New message</h2>
+      </div>
+
+      <form action="." method="post" class="panel-body">
+        {% csrf_token %}
+        <fieldset>
+          <div class="form-group form-required">
+            <label for="{{ form.subject.name }}" class="control-label">Subject</label>
+            <input type="text" class="form-control" id="id_{{form.subject.name}}" name="{{form.subject.name}}" placeholder="Subject" required>
+          </div>
+
+          <div class="form-group form-required">
+            <label for="{{ form.user_to.name }}" class="control-label">Recipent</label>
+            {{ form.user_to }}
+          </div>
+
+          <div class="form-group form-required">
+            <label for="{{ form.text.name }}" class="control-label">Message</label>
+            <textarea id="id_{{ form.text.name }}" name="{{ form.text.name }}" class="form-control textarea-wysiswyg" rows="10"></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-primary">Send</button>
+        </fieldset>
+      </form>
+    </div>
+  </div>
+
+
+{% endblock section_content %}

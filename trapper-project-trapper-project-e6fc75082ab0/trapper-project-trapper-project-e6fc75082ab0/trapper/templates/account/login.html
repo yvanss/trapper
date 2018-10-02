@@ -1,0 +1,54 @@
+{% extends "index.html" %}
+
+{% load i18n %}
+{% load account %}
+{% load common_tags %}
+
+{% block head_title %}{% trans "Signup" %}{% endblock %}
+
+{% block main_menu %}{% nav_active 'menu_login' %}{{ block.super }}{% endblock main_menu %}
+
+{% block content %}
+
+  <div class="container">
+    <div class="col-md-6 col-md-offset-3">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h2 class="panel-title">Log in</h2>
+        </div>
+
+        <form action="{% url 'account_login' %}" class="panel-body" method="post">
+          {% for error in form.non_field_errors %}
+            <p class="text-danger">{{ error }}</p>
+          {% endfor %}
+          {% csrf_token %}
+          <fieldset>
+            <div class="form-group form-required">
+              <label for="login" class="control-label">E-mail</label>
+              <input type="text" id="id_login" name="login" class="form-control" required>
+              {% for error in form.email.errors %}
+                <p class="text-danger">{{ error }}</p>
+              {% endfor %}
+            </div>
+
+            <div class="form-group form-required">
+              <label for="password" class="control-label">Password</label>
+              <input type="password" id="id_password" name="password" class="form-control" required>
+              {% for error in form.password.errors %}
+                <p class="text-danger">{{ error }}</p>
+              {% endfor %}
+            </div>
+
+            {% if redirect_field_value %}
+              <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+            {% endif %}
+
+            <button type="submit" class="btn btn-primary">Log in</button>
+
+            <div class="text-center"><a href="{{ signup_url }}">Need an account? Sign up for free.</a></div>
+          </fieldset>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}

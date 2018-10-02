@@ -1,0 +1,70 @@
+{% extends "common/grid.html" %}
+
+{% block filters %}
+
+<div class="form-group form-filter form-datepicker">
+  <label class="control-label">Updated</label>
+  <div class="input-group input-daterange"
+       filter-daterange="filters.udate"
+       filter-name="'udate'"
+       filter-service="filter">
+    <input
+       type="text"
+       class="form-control"
+       placeholder="from"
+       >
+    <span class="input-group-addon">
+      <span class="fa fa-calendar"></span>
+    </span>
+    
+    <input
+       type="text"
+       class="form-control"
+       placeholder="to"
+       >
+  </div>
+</div>
+
+<div class="form-group form-filter-full">
+  <label for="owners" class="control-label">Owners</label>
+  <select
+     type="text"
+     id="owners"
+     class="select2-default"
+     multiple
+     ng-model="filters.owners"
+     filter-tokens="owner"
+     filter-service="filter">
+    {% for owner in grid_context.owners %}
+    <option value="{{ owner.pk }}">{{ owner|pretty_username }}</option>
+    {% endfor %}
+  </select>
+</div>
+
+{% endblock %}
+
+{% block custom_actions %}
+{% endblock%}
+
+{% block custom_actions_list %}
+
+<li ng-class="{'disabled': !filters.owner}">
+  <action-remove-selected
+   ng-click="execute($event, '{% url "media_classification:classificator_delete_multiple" %}')">
+  </action-remove-selected>
+</li>
+
+{% endblock%}
+
+{% block table_cells %}
+
+<td data-title="'Name'" sortable="'name'">{[{ record.name }]}</td>
+<td data-title="'Owner'" sortable="'owner'"><a ng-href="{[{ record.owner_profile }]}">{[{ record.owner
+    }]}</a></td>
+<td data-title="'Date updated'" sortable="'updated_date'">{[{ record.updated_date | date:
+  dateFormat.table }]}</td>
+
+{% endblock %}
+
+{% block table_cells_extra_actions %}
+{% endblock %}

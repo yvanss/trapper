@@ -1,0 +1,11 @@
+{% extends 'research/index.html' %}
+
+{% block data_app %}research::list{% endblock data_app %}
+
+{% block ng_app %}ng-app="trapperGrid"{% endblock ng_app %}
+
+{% block section_content %}
+    {% with grid_context=research_project_context%}
+    {% include 'research/project_grid.html' %}
+    {% endwith %}
+{% endblock section_content %}

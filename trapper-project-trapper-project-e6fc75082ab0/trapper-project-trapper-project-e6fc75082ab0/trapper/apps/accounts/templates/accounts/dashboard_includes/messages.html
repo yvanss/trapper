@@ -1,0 +1,37 @@
+<div class="panel-heading">
+    <h2 class="panel-title">Messages</h2>
+</div>
+{% if inbox_messages %}
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Type</th>
+            <th>Subject</th>
+            <th>Date</th>
+            <th>Sender</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        {% for message in inbox_messages %}
+            <tr>
+                <td><span class="{% if message.is_request %}fa fa-share-alt{% else %}fa fa-envelope{% endif %}"></span>
+                </td>
+                <td>
+                    <a href="{% url 'messaging:message_detail' hashcode=message.hashcode %}">{{ message.subject|safe }}</a>
+                </td>
+                <td>{{ message.date_sent|date:"d.m.Y, H:i" }}</td>
+                <td><a href="{{ message.user_from.userprofile.get_absolute_url }}">{{ message.user_from.username }}</a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <div class="alert alert-warning ng-binding"><span class="fa fa-info"></span> Your message box is empty.</div>
+{% endif %}
+
+<div class="panel-footer">
+    <a href="{% url 'messaging:message_inbox' %}" class="btn btn-default btn-sm">More <span
+            class="fa fa-angle-double-right"></span></a>
+</div>

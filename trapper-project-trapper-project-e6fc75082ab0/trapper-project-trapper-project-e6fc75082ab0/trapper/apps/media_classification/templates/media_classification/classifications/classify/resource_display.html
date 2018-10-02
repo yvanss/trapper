@@ -1,0 +1,27 @@
+{% if resource.resource_type == "V" %}
+    <div class="col-md-7 media-full">
+        <video
+                id="trapper-video-player"
+                width="650"
+                height="430"
+                controls
+                preload="auto"
+                class="video-js vjs-default-skin">
+            <source src="{{ resource.get_url }}" type="{{ resource.mime_type }}"/>
+            {% if resource.extra_file %}
+                <source src="{{ resource.get_extra_url }}" type="{{ resource.extra_mime_type }}"/>
+            {% endif %}
+        </video>
+    </div>
+{% elif resource.resource_type == "A" %}
+    <audio controls>
+        <source src="{{resource.get_url}}" type="{{resource.mime_type}}" />
+        {% if resource.extra_file %}
+            <source src="{{ resource.get_extra_url }}" type="{{ resource.extra_mime_type }}">
+        {% endif %}
+    </audio>
+{% elif resource.resource_type == "I" %}
+    <a href="{{ resource.get_url }}" data-media="image"><img src="{{ resource.get_url }}" alt=""></a>
+{% else %}
+    Unrecognized resource <type></type>
+{% endif %}

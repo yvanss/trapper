@@ -1,0 +1,23 @@
+{% extends "index.html" %}
+
+{% load common_tags %}
+
+{% block data_app %}messaging:main{% endblock %}
+
+{% block main_menu %}{% nav_active 'menu_messages' %}{{ block.super }}{% endblock main_menu %}
+
+{% block content %}
+  <ul class="nav nav-pills">
+    <div class="nav-secondary">
+      <a href="{% url "messaging:message_inbox" %}" class="btn btn-{% block messaging_message_inbox %}default{% endblock %}">Inbox <span class="badge">{{ user.userprofile.count_unread_messages }}/{{ user.userprofile.count_inbox_messages }}</span></a>
+      <a href="{% url "messaging:message_outbox" %}" class="btn btn-{% block messaging_message_outbox %}default{% endblock %}">Outbox <span class="badge">{{ user.sent_messages.all.count }}</span></a>
+      <a href="{% url "messaging:collection_request_list" %}" class="btn btn-{% block messaging_collection_request %}default{% endblock %}">Collection requests <span class="badge">{{ user.userprofile.awaiting_collection_requests }}</span></a>
+      <a href="{% url "messaging:message_create" %}" class="btn btn-success pull-right"><span class="fa fa-pencil"></span> New message</a>
+    </div>
+
+  </ul>
+  <div class="pill-content">
+    {% block section_content %}{% endblock section_content %}
+  </div>
+{% endblock content %}
+

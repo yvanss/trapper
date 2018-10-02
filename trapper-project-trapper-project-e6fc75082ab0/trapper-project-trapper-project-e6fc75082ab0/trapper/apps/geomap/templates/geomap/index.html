@@ -1,0 +1,24 @@
+{% extends "index.html" %}
+
+{% load staticfiles %}
+{% load common_tags %}
+
+{% block main_menu %}{% nav_active 'menu_geomap' %}{{ block.super }}{% endblock main_menu %}
+
+{% block scripts_prepend %}
+<script src="{% static "storage/reqs/leaflet/leaflet-src.js" %}"></script>
+<script src="{% static "storage/reqs/markercluster/leaflet.markercluster-src.js" %}"></script>
+<script src="{% static "storage/reqs/label/leaflet.label-src.js" %}"></script>
+<link rel="stylesheet" href="{% static "storage/reqs/leaflet/leaflet.css" %}" />
+<link rel="stylesheet" href="{% static "storage/reqs/markercluster/MarkerCluster.css" %}" />
+<link rel="stylesheet" href="{% static "storage/reqs/markercluster/MarkerCluster.Default.css" %}" />
+<link rel="stylesheet" href="{% static "storage/reqs/label/leaflet.label.css" %}" />
+{% endblock scripts_prepend %}
+
+{% block scripts_append %}
+{% endblock scripts_append %}
+
+
+{% block content %}
+  {% block section_content %}{% endblock section_content %}
+{% endblock content %}

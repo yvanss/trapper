@@ -1,0 +1,39 @@
+<div class="panel-heading">
+    <h2 class="panel-title">Data packages (zip archives)</h2>
+</div>
+{% if data_packages %}
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Size</th>
+            <th>Created at</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        {% for data_package in data_packages %}
+            {% url 'accounts:data_package_delete' data_package.pk as data_package_delete_url %}
+            <tr>
+                <td>{{ data_package.filename|truncatechars:21 }}</td>
+                <td>{{ data_package.get_package_type_display }}</td>
+                <td>{{data_package.package.size|filesizeformat}}</td>
+                <td>{{ data_package.date_created|date:"d.m.Y H:s" }}</td>
+                <td>
+                    <a href="{{ data_package.get_download_url }}" class="btn btn-xs btn-default" data-tooltip="tooltip"
+                       title="Download"><span class="fa fa-download"></span></a>
+                    <a href="{{ data_package_delete_url }}" class="btn btn-xs btn-danger btn-delete"
+                       data-tooltip="tooltip" title="Delete package"><span class="fa fa-trash-o"></span></a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <div class="alert alert-warning ng-binding"><span class="fa fa-info"></span> You have no data_packages.</div>
+{% endif %}
+
+<div class="panel-footer">
+</div>

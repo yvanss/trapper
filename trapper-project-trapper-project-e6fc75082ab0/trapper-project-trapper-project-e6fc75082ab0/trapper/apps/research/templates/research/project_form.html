@@ -1,0 +1,14 @@
+{% load crispy_forms_tags %}
+
+{% if researchproject.pk %}
+  {% url 'research:project_update' researchproject.pk as research_url %}
+{% else %}
+  {% url 'research:project_create' as research_url  %}
+{% endif %}
+
+<form action="{{ research_url }}" method="post" class="panel-body">
+  {% crispy form form.helper  %}
+  <fieldset>
+    <button type="submit" class="btn btn-primary">{% if researchproject %}Update{% else %}Add{% endif %} research project</button>
+  </fieldset>
+</form>

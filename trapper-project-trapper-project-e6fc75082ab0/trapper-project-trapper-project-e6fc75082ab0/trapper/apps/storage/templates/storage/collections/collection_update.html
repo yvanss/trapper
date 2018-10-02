@@ -1,0 +1,18 @@
+{% extends 'storage/index.html' %}
+
+{% block data_app %}collection::create{% endblock data_app %}
+
+{% block section_content %}
+    <div class="container">
+        <div class="col-md-6 col-md-offset-3">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h2 class="panel-title">Update collection</h2>
+                </div>
+                {% include 'storage/collections/collection_update_modal.html' %}
+            </div>
+        </div>
+    </div>
+
+{% endblock section_content %}
+

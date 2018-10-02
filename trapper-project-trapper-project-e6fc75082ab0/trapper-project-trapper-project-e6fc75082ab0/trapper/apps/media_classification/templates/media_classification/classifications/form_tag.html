@@ -1,0 +1,22 @@
+{% load crispy_forms_tags %}
+<form action="{% url 'media_classification:classification_tag' pk=project.pk %}" class="panel-body" method="post">
+    <fieldset>
+
+        {% for field in form %}
+            <div class="checkbox">
+                {% if not field.is_hidden %}
+                    <label>
+                {% endif %}
+
+                {{ field }}
+
+                {% if not field.is_hidden %}
+                    {{ field.label }}
+                    </label>
+                {% endif %}
+            </div>
+        {% endfor %}
+
+        <button type="submit" class="btn btn-primary">Add tags</button>
+    </fieldset>
+</form>

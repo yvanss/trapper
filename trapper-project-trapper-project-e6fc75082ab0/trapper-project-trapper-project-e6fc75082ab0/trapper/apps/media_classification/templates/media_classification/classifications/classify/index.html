@@ -1,0 +1,63 @@
+{% extends "media_classification/index.html" %}
+
+{% load common_tags %}
+{% load user_comments %}
+{% load crispy_forms_tags %}
+
+{% block data_app %}{% if is_readonly %}classification::preview{% else %}classification::classify{% endif %}{% endblock data_app %}
+
+{% block ng_app %}ng-app="trapperGrid"{% endblock ng_app %}
+
+{% block section_content %}
+
+<div class="row">
+  <div class="col-md-12">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h2 class="panel-title">
+        <span class="fa fa-flask"></span> <a href="{% url 'research:project_detail' pk=project.research_project.pk %}">{{ project.research_project.acronym }}</a> >
+        <span class="fa fa-cubes"></span> <a href="{% url 'media_classification:project_detail' pk=project.pk %}">{{ project.name }}</a> >
+        <span class="fa fa-database"></span> <a href="{% url 'storage:collection_detail' pk=storage_collection.pk %}">{{ storage_collection.name }}</a> >
+        {% if resource.deployment %}
+        <span class="fa fa-globe"></span> <a href="{% url 'geomap:deployment_detail' pk=resource.deployment_id %}">{{ resource.deployment }}</a> >
+        {% endif %}
+        <span class="fa fa-file-{{ resource.get_resource_type_display|lower }}-o"></span> <a href="{% url 'storage:resource_detail' pk=resource.pk %}"><strong>{{ resource.name }}</strong></a>
+      </h2>
+    </div>
+  </div>
+</div>
+</div>
+
+{% include 'media_classification/classifications/classify/sequence_box.html' %}
+
+<div class="row">
+  <div class="col-md-7 media-full">
+    {% include 'media_classification/classifications/classify/resource_display.html' %}
+  </div>
+  
+  <div class="col-md-5">
+    <div class="panel panel-default">
+      
+      <ul class="nav nav-tabs">
+        <li class="active"><a href="#tab-0" data-toggle="tab">Classifications</a></li>
+        <!-- <li><a href="#tab-1" data-toggle="tab">Comments <span class="badge">{% get_comments_count item=project %}</span></a></li> -->
+        <!-- <li><a href="#tab-2" data-toggle="tab" id="tab-comment-form"><span class="fa fa-comment"></span> Add a comment</a></li> -->
+      </ul>
+
+      <div class="tab-content tab-fixed">
+        <div class="tab-pane active" id="tab-0">
+          {% include 'media_classification/classifications/classify/classification_box.html' %}
+        </div>
+        <!-- {% include 'media_classification/classifications/classify/comment_box.html' %} -->
+      </div>
+    </div>
+  </div>
+</div>
+<h4>Classification forms</h4>
+{% if form_template %}
+{% include form_template %}
+{% endif %}
+
+</div>
+
+{% endblock section_content %}

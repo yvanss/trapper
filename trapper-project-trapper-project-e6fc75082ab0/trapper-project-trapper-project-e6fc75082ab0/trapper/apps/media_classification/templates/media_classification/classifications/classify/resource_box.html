@@ -1,0 +1,15 @@
+<div class="panel-sequence">
+  <img ng-src="{{ resource.get_thumbnail_url }}" class="img-thumbnail">
+  <ul>
+    <li class="panel-name">
+      <span class="fa fa-file-{{ resource.get_resource_type_display|lower }}-o"></span> {{ resource.name }}
+    </li>
+    <li>Date: {{ resource.date_recorded|date:"d.m.Y" }}</li>
+    <li>Time: {{ resource.date_recorded|date:'H:s' }}</li>
+  </ul>
+
+  <a class="btn btn-sm btn-block {% if is_classified %}btn-success btn-disabled{% else %}btn-default{% endif %}" href="{% url 'media_classification:classify' project_pk=project.pk collection_pk=collection.pk resource_pk=resource.pk %}">
+
+    <span class="fa fa-eye"></span> Classify
+  </a>
+</div>

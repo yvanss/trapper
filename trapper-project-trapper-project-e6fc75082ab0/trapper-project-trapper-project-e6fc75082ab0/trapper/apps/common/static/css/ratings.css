@@ -1,0 +1,15 @@
+.average_rate {
+    float: right;
+    margin-right: 40px;
+}
+.average_rate strong {
+    padding-right: 5px;
+}
+
+.one {
+    float: left;
+}
+
+.two {
+    margin-left: 300px;
+}

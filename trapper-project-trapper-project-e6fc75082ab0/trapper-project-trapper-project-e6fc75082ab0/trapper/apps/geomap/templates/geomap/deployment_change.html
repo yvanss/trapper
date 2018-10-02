@@ -1,0 +1,17 @@
+{% extends 'geomap/index.html' %}
+
+{% block data_app %}deployment::update{% endblock data_app %}
+
+{% block section_content %}
+  <div class="container">
+    <div class="col-md-6 col-md-offset-3">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h2 class="panel-title">{% if object.pk %}Update{% else %}Add{% endif %} deployment</h2>
+        </div>
+        {% include 'geomap/deployment_form.html' %}
+      </div>
+    </div>
+  </div>
+
+{% endblock section_content %}

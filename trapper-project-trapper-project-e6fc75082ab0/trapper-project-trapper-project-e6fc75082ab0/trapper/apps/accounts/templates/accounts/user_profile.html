@@ -1,0 +1,56 @@
+{% extends "index.html" %}
+
+{% block content %}
+  {% with profile.user as profile_user %}
+  <div class="container">
+    <div class="col-md-6">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h2 class="panel-title">Profile information</h2>
+        </div>
+
+        <div class="panel-body">
+          <label>Username:</label> {{ profile_user.username }}
+        </div>
+
+        <div class="panel-body">
+          <label>Email:</label> <a href="mailto:{{ profile_user.email }}">{{ profile_user.email }}</a>
+        </div>
+
+        <div class="panel-body">
+          <label>First name:</label> {{ profile_user.first_name|default:'' }}
+        </div>
+
+        <div class="panel-body">
+          <label>Last name:</label> {{ profile_user.last_name }}
+        </div>
+
+        <div class="panel-body">
+          <label>Institution:</label> {{ profile.institution }}
+        </div>
+
+        <div class="panel-body">
+          <img alt="{{ profile_user.username }} avatar" src="{{ profile.avatar_url }}" class="img-thumbnail avatar-big">
+        </div>
+
+      </div>
+    </div>
+
+
+    {% if profile.about_me%}
+    <div class="col-md-6">
+      <div class="panel panel-default">
+            <div class="panel-heading">
+              <h2 class="panel-title">About me</h2>
+            </div>
+
+            <div class="panel-body">
+              <p>{{ profile.about_me|safe }}</p>
+            </div>
+      </div>
+    </div>
+    {% endif %}
+
+  </div>
+  {% endwith %}
+{% endblock content %}

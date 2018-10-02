@@ -1,0 +1,58 @@
+{% extends "index.html" %}
+
+{% load crispy_forms_tags %}
+{% load common_tags %}
+{% load tz %}
+
+{% block data_app %}user::edit{% endblock data_app %}
+
+{% block main_menu %}{% nav_active 'menu_profile' %}{{ block.super }}{% endblock main_menu %}
+
+{% block content %}
+<div class="container">
+  <div class="col-md-6">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h2 class="panel-title">Account settings</h2>
+      </div>
+      <form method="post" action="{% url 'accounts:mine_profile' %}" class="panel-body" enctype="multipart/form-data">
+        {% crispy profile_form profile_form.helper %}
+        <button type="submit" name="update-profile" class="btn btn-primary">Save settings</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+
+    <div class="row">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h2 class="panel-title">Change password</h2>
+        </div>
+        <form method='post' action="{% url 'accounts:mine_profile' %}" class="panel-body">
+          {% crispy password_form password_form.helper %}
+          <fieldset>
+            <button type="submit" name="change-password" class="btn btn-warning">Change password</button>
+          </fieldset>
+        </form>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h2 class="panel-title">Your working timezone</h2>
+        </div>
+        <form method='post' action="{% url 'accounts:mine_profile' %}" class="panel-body">
+          {% crispy timezone_form timezone_form.helper %}
+          <fieldset>
+            <button type="submit" name="set-timezone" class="btn btn-warning">Set timezone</button>
+          </fieldset>
+        </form>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+{% endblock content %}

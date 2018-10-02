@@ -1,0 +1,49 @@
+<div class="panel-heading">
+  <h2 class="panel-title">Classification projects</h2>
+</div>
+{% if classification_projects %}
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Role</th>
+      <th>Status</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  
+  <tbody>
+    {% for project in classification_projects %}
+    {% url 'media_classification:project_detail' project.pk as project_url %}
+    <tr>
+      <td>
+        <a href="{{ project_url }}">
+          {{ project.name }}</a>
+      </td>
+      <td>
+        {% for role in project.get_user_roles %}{{ role }}{% if not forloop.last %},
+        {% endif %}{% endfor %}
+      </td>
+      <td>
+        <span class="label label-{{ project.is_finished|yesno:"success,danger" }}"><span class="fa fa-check"></span> {{ project.get_status_display }}</span>
+      </td>
+      <td>
+        <a href="{{ project_url }}" class="btn btn-xs btn-default" data-tooltip="tooltip" title="Details"><span class="fa fa-search"></span></a>
+        {% if project.can_update %}
+        <a href="{% url 'media_classification:project_update' project.pk %}" class="btn btn-xs btn-default" data-tooltip="tooltip" title="Update"><span class="fa fa-pencil"></span></a>
+        {% endif %}
+        <a href="{% url 'media_classification:classification_list' pk=project.pk %}" class="btn btn-xs btn-default" data-tooltip="tooltip" title="Classification results"><span class="fa fa-eye"></span></a>
+      </td>
+    </tr>
+        {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<div class="alert alert-warning ng-binding"><span class="fa fa-info"></span> You have no classification projects.
+</div>
+{% endif %}
+
+<div class="panel-footer">
+  <a href="{% url 'media_classification:project_index' %}" class="btn btn-default btn-sm">More <span class="fa fa-angle-double-right"></span></a>
+</div>

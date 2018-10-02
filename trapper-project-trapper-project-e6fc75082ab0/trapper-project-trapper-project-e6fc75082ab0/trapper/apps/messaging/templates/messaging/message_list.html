@@ -1,0 +1,38 @@
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h2 class="panel-title">Messages</h2>
+  </div>
+
+  {% if message_list %}
+  <table class="table table-striped">
+    <thead>
+    <tr>
+      <th>Subject</th>
+      <th>Date</th>
+      <th>Sender</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    {% for message in message_list %}
+    <tr>
+      <td>
+        <span class="fa fa-circle{% if not is_inbox or not message.is_new %}-o{% endif %}"></span>
+        <a href="{% url "messaging:message_detail" message.hashcode %}">{{ message.subject|safe }}</a>
+      </td>
+      <td>{{ message.date_sent|date:"d.m.Y, H:i" }}</td>
+      <td><a href="{{ message.user_from.userprofile.get_absolute_url }}">{% pretty_username message.user_from %}</a></td>
+    </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% include 'common/pagination.html' %}
+  {% else %}
+    <div class="alert alert-warning ng-binding">
+      <span class="fa fa-info"></span> No messages available.
+    </div>
+  {% endif %}
+</div>
+
+

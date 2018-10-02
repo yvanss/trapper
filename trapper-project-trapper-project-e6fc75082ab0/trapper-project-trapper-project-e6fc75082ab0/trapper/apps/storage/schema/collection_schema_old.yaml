@@ -1,0 +1,28 @@
+type:      map
+mapping:
+ "collections":
+    type:      seq
+    sequence:
+      - type:    map
+        mapping:
+         "name":
+            type:      str
+            required:  yes
+         "resources_dir":
+            type:      str
+            required:  yes
+         "location_id":
+            type:      str
+            required:  no
+         "project_name":
+            type:      str
+            required:  no
+         "managers":
+            type:      seq
+            required:  no
+            sequence:
+              - type:    map
+                mapping:
+                 "username":
+                    type:      str
+                    required:  yes

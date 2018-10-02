@@ -1,0 +1,11 @@
+{% extends 'storage/index.html' %}
+
+{% block data_app %}resource::list{% endblock data_app %}
+
+{% block ng_app %}ng-app="trapperGrid"{% endblock ng_app %}
+
+{% block section_content %}
+    {% with grid_context=resource_context %}
+    {% include 'storage/resources/resource_grid.html' %}
+    {% endwith %}
+{% endblock section_content %}

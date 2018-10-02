@@ -1,0 +1,56 @@
+<div class="panel-heading">
+    <h2 class="panel-title">Celery tasks</h2>
+</div>
+
+{% if celery_tasks %}
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Start</th>
+            <th>End</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        {% for task in celery_tasks %}
+            <tr class="{{ task.dashboard_status.css }}">
+                <td>{{ task.dashboard_name }}</td>
+                <td>{{ task.tstamp|date:"d.m.Y H:s" }}</td>
+                <td>{{ task.dashboard_end|date:"d.m.Y H:s" }}</td>
+                <td><span class="label label-{{ task.dashboard_status.css }}"><span
+                        class="fa {{ task.dashboard_status.icon }}"></span> {{ task.state }}</span></td>
+                <td>
+                    {% if task.dashboard_status.action_stop %}
+                        <a href="{% url 'accounts:celery_task_cancel' %}" class="btn btn-xs btn-default btn-cancel"
+                           data-task="{{ task.task_id }}" data-tooltip="tooltip" title="Cancel task"><span
+                                class="fa fa-remove"></span></a>
+                    {% endif %}
+
+                    {% if task.dashboard_status.action_detail %}
+                        <button class="btn btn-xs btn-default btn-log" title="Read log"><span
+                                class="fa fa-file-o"></span></button>
+                        <div data-title="{{ task.dashboard_status.title }}" data-mode="{{ task.state|lower }}">
+                            <label>Result:</label>
+                            {% if task.result %}
+                                <div>{{ task.result|safe|default:"" }}</div>
+                            {% endif %}
+                            {% if task.traceback %}
+                                <pre>{{ task.traceback|default:"" }}</pre>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% else %}
+    <div class="alert alert-warning ng-binding"><span class="fa fa-info"></span> List of tasks is empty.</div>
+{% endif %}
+
+<div class="panel-footer">
+</div>

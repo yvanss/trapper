@@ -1,0 +1,31 @@
+{% extends "storage/index.html" %}
+
+{% load crispy_forms_tags %}
+
+{% block data_app %}collection::request{% endblock data_app %}
+
+{% block section_content %}
+
+<div class="container">
+  <div class="col-md-6 col-md-offset-3">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h2 class="panel-title">Collection request</h2>
+      </div>
+      <form method="post" action="" class="panel-body">
+        <fieldset>
+          {% with collection.owner as owner %}
+          <p>You are about to send a request to <a href="{% url 'accounts:show_profile' owner.username %}">{{ owner.get_full_name }}</a> to obtain the access to one of his collections: <a href="{% url 'storage:collection_detail' collection.pk %}">{{ collection.name }}</a>.</p>
+          {% endwith %}
+        </fieldset>
+        {% crispy form form.helper %}
+        <fieldset>
+          <button type="submit" class="btn btn-primary">Send request</button>
+          <a class="btn btn-default" href="{% url 'storage:collection_list' %}">Cancel</a>
+        </fieldset>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock section_content %}

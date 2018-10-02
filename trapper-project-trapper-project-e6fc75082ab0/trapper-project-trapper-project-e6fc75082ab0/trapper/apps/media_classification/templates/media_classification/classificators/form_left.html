@@ -1,0 +1,102 @@
+{% load crispy_forms_tags %}
+
+<h3>Dynamic form attributes</h3>
+
+<table class="table table-striped table-rich" id="id_dynamic_attrs">
+    {% if attributes_dynamic %}
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>HStore</th>
+            <th>Actions</th>
+            <th>Order</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        {% for params in attributes_dynamic %}
+            <tr>
+                <td>{{ params.name }}</td>
+                <td><span class="label {{ params.cls }}">{{ params.type }}</span></td>
+                <td>{% if params.is_custom %}
+                    <pre>{{ params.hstore }}</pre>{% endif %}</td>
+                <td>
+                    {% if params.is_custom %}
+                        <button type="submit" name="updateAttr" value="{{ params.name }}"
+                                class="btn btn-default btn-xs"><span class="fa fa-pencil"></span></button>
+                        <button type="submit" name="removeAttr" value="{{ params.name }}" class="btn btn-danger btn-xs">
+                            <span class="fa fa-remove"></span></button>
+                    {% endif %}
+                </td>
+                <td>
+                    <button type="button" class="btn btn-default btn-xs" data-move="-1"><span
+                            class="fa fa-arrow-up"></span></button>
+                    <button type="button" class="btn btn-default btn-xs" data-move="1"><span
+                            class="fa fa-arrow-down"></span></button>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    {% else %}
+        <tbody>
+        <tr>
+            <td colspan="5" class="alert alert-warning ng-binding"><span class="fa fa-info"></span> There are no dynamic
+                attributes defined.
+            </td>
+        </tr>
+        </tbody>
+    {% endif %}
+</table>
+
+
+<h3>Static form attributes</h3>
+
+<input type="hidden" id="static-attrs-order" name="id_static_attrs_order">
+
+<table class="table table-striped table-rich" id="id_static_attrs">
+    {% if attributes_static %}
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>HStore</th>
+            <th>Actions</th>
+            <th>Order</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        {% for params in attributes_static %}
+            <tr>
+                <td>{{ params.name }}</td>
+                <td><span class="label {{ params.cls }}">{{ params.type }}</span></td>
+                <td>{% if params.is_custom %}
+                    <pre>{{ params.hstore }}</pre>{% endif %}</td>
+                <td>
+                    {% if params.is_custom %}
+                        <button type="submit" name="updateAttr" value="{{ params.name }}"
+                                class="btn btn-default btn-xs"><span class="fa fa-pencil"></span></button>
+                        <button type="submit" name="removeAttr" value="{{ params.name }}" class="btn btn-danger btn-xs">
+                            <span class="fa fa-remove"></span></button>
+                    {% endif %}
+                </td>
+                <td>
+                    <button type="button" class="btn btn-default btn-xs" data-move="-1"><span
+                            class="fa fa-arrow-up"></span></button>
+                    <button type="button" class="btn btn-default btn-xs" data-move="1"><span
+                            class="fa fa-arrow-down"></span></button>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    {% else %}
+        <tbody>
+        <tr>
+            <td colspan="5" class="alert alert-warning ng-binding"><span class="fa fa-info"></span> There are no static
+                attributes defined.
+            </td>
+        </tr>
+        </tbody>
+    {% endif %}
+</table>

@@ -1,0 +1,61 @@
+# Compiled source #
+###################
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+*.pyc
+
+
+# Packages #
+############
+# it's better to unpack these files and commit the raw source
+# git has its own built in compression methods
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# Logs and databases #
+######################
+*.log
+*.sqlite
+
+# Other files #
+######################
+.DS_Store*
+ehthumbs.db
+Icon?
+Thumbs.db
+*.*~
+*.*#
+*.pot
+*.pid
+*.el
+*.ipynb
+
+# Other              #
+######################
+/.idea/
+settings_local.py
+.project
+.pydevproject
+.installed.cfg
+settings_db.py
+/env/
+trapper.egg-info/
+/static/
+/build/
+/dist/
+/docs/_build/
+/docs/_static/
+/docs/_templates/
+/.ipynb_checkpoints/
+/trapper/celery_data/*/
+merge_manually.sh

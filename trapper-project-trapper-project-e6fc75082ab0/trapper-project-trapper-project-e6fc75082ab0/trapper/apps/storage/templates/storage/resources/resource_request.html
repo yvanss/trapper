@@ -1,0 +1,53 @@
+{% extends "storage/index.html" %}
+
+{% load crispy_forms_tags %}
+
+{% block data_app %}resource::request{% endblock data_app %}
+
+{% block section_content %}
+
+    <div class="container">
+        <div class="col-md-6 col-md-offset-3">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h2 class="panel-title">Resource request</h2>
+                </div>
+
+                {% if owned %}
+                    <p>This is your resource.</p>
+                {% else %}
+                    {% if is_public %}
+                        <p>Resource <strong>{{ resource.name }}</strong> is available for everyone.</p>
+                    {% else %}
+                        {% if already_approved %}
+                            <p>You already have access to resource <strong>{{ resource.name }}</strong></p>
+
+                        {% else %}
+                            {% if status %}
+                                <p>You have already requested access to
+                                    <strong>{{ resource.name }}</strong> {{ status|timesince }} ago.</p>
+                                <p>You can requet access to resource once per {{ delay }} hours.</p>
+                            {% else %}
+                                <form action="" method="post" class="panel-body">
+                                    <fieldset>
+                                        <p>You are about to ask <span class="fa fa-user"></span> <a
+                                                href="{{ resource.owner.userprofile.get_absolute_url }}">{{ resource.owner.username }}</a>
+                                            for a request to obtain access to <span class="fa fa-file-archive-o"></span>
+                                            <a href="{{ resource.get_absolute_url }}">{{ resource.name }}</a>.</p>
+                                    </fieldset>
+                                    {% crispy form form.helper %}
+
+                                    <fieldset>
+                                        <button type="submit" class="btn btn-primary">Send request</button>
+                                        <a class="btn btn-default" href="{% url 'storage:resource_list' %}">Cancel</a>
+                                    </fieldset>
+                                </form>
+                            {% endif %}
+                        {% endif %}
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+{% endblock section_content %}

@@ -1,0 +1,197 @@
+<div class="row"
+     ng-controller="SequenceController"
+     ng-init="load('{% url "media_classification:api-classification-resources-list" collection.pk resource.pk %}', '{% url "media_classification:api-sequence-list" %}?collection={{ collection.pk }}', {{ resource.pk }}, {{ collection.pk }})">
+  <!-- res, seq, current resource pk, collection_pk !-->
+  
+  <div class="col-md-9">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h2 class="panel-title">Filters</h2>
+      </div>
+
+      <div class="panel-body">
+        <div class="form-group form-filter-wide">
+          <label class="control-label">Rec. date</label>
+
+          <div class="input-group input-daterange"
+               filter-daterange="filters.recorded_date"
+               filter-name="'recorded_date'"
+               filter-service="filter">
+            <input
+              type="text"
+              class="form-control"
+              placeholder="from"
+              >
+
+            <span class="input-group-addon">
+              <span class="fa fa-calendar"></span>
+            </span>
+
+            <input
+              type="text"
+              class="form-control"
+              placeholder="to"
+              >
+          </div>
+        </div>
+
+
+        <div class="form-group form-filter-wide">
+          <label class="control-label">Rec. time</label>
+
+          <div class="input-group input-daterange"
+               filter-timerange="filters.recorded_time"
+               filter-name="'recorded_time'"
+               filter-service="filter">
+            <input
+              type="text"
+              class="form-control"
+              placeholder="from"
+              >
+
+            <span class="input-group-addon">
+              <span class="fa fa-clock-o"></span>
+            </span>
+
+            <input
+              type="text"
+              class="form-control"
+              placeholder="to"
+              >
+          </div>
+        </div>
+
+        <div class="form-group form-filter-full">
+          <label for="managers" class="control-label">Deployments</label>
+
+          <select
+            id="deployment"
+            class="select2-default"
+            multiple
+            ng-model="filters.deployment"
+            filter-tokens="deployment"
+            filter-service="filter">
+            {% for deployment in deployments %}
+              <option value="{{ deployment.0 }}">{{ deployment.1 }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+          <button
+             type="button"
+             class="btn btn-success"
+             ng-click="reload()">
+            <span class="fa fa-search"></span> Filter {{ grid_context.model_name }}
+          </button>
+          
+          <div class="btn-selects">
+          <!-- <button type="button" class="btn btn-default" ng-class="{ active: onlySelected }" ng-click="showSelected()">Sequence only</button> -->
+          <button type="button" class="btn btn-default" ng-click="saveFilters()">Save filters</button>
+
+          <button
+            type="button"
+            class="btn btn-warning"
+            ng-click="filter.clearFilters()">Clear filters</button>
+
+          <button type="button" class="btn btn-danger" ng-click="clearSelection()">Clear selections</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h2 class="panel-title" style="display:inline">Resources</h2>
+        <div class="pull-right">
+          Total in collection: <strong>{[{ data.pagination.total }]}</strong> |
+          Filtered: <strong>{[{ data.pagination.filtered }]}</strong> | 
+          Selected <strong>{[{ data.selectedCounter }]}</strong>
+        </div>
+      </div>
+
+      <div class="panel-body panel-scroll" ng-cloak>
+        <div class="panel-sequence"
+             ng-repeat="record in data.records track by record.pk"
+             ng-click="select($event, record)"
+             ng-class="{'selected': record.$selected, 'approved': record.classification_data.is_approved, 'current': record.pk === current }">
+
+          <div class="panel-seq-list" ng-if="record.sequence">
+            <span class="badge">{[{ record.sequence }]}</span>
+          </div>
+
+          <span ng-if="!record.classification_data.is_new" class="badge badge-classified"><span class="fa fa-check"></span></span>
+
+          <action-media ng-click="execute($event, record)">
+            <img ng-src="{[{ record.thumbnail_url }]}">
+          </action-media>
+          <ul>
+            <li class="panel-name">
+              <span ng-bind-html="record.resource_type | typesIcon"></span> {[{ record.name }]}
+            </li>
+            <li>{[{ record.date_recorded | dateTZ: dateFormat.table }]}</li>
+          </ul>
+
+          <a ng-if="!record.classification_data.is_approved" ng-href="{[{ record.classification_data.url }]}" class="btn btn-sm btn-default btn-block"><span class="fa fa-eye"></span> Classify</a>
+
+          <a ng-if="record.classification_data.is_approved" ng-href="{[{ record.classification_data.url }]}" class="btn btn-sm btn-success btn-block"><span class="fa fa-eye"></span> Approved</a>
+        </div>
+      </div>
+
+      <div class="panel-footer">
+        <button class="btn btn-default btn-first">first</button>
+        <button class="btn btn-default btn-current">current</button>
+        <button class="btn btn-default btn-last">last</button>
+        <div class="form-group pull-right">
+          <select
+             class="form-control"
+             ng-model="filters.size"
+             ng-options="option as option for option in sequenceSizes"
+             ng-change="load_resources(data.request.Resurl, {size: filters.size}, true)"
+             >
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% if project.is_sequencing_enabled %}
+  <div class="col-md-3">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h2 class="panel-title">Sequence</h2>
+      </div>
+
+      <div class="panel-body">
+        <select
+          id="sequence-picker"
+          ng-model="sequences.selected"
+          ng-change="sequenceChanged()"
+          ng-options="seq as 'Sequence: '+seq.sequence_id for seq in sequences.original">
+        </select>
+        {% if collection.is_sequencing_enabled %}
+        <button type="button" class="btn btn-primary btn-block" ng-click="saveSequence('{% url "media_classification:sequence_change" %}')">Save sequence</button>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="panel panel-default" ng-hide="sequences.selected.blank" ng-cloak>
+      <div class="panel-heading">
+        <h2 class="panel-title">Details</h2>
+      </div>
+
+      <ul class="list-group list-narrow">
+        <li class="list-group-item"><span class="list-group-label">Resources:</span> {[{ sequences.selected.resources.length }]}</li>
+        <li class="list-group-item"><span class="list-group-label">Date:</span> {[{ sequences.selected.created_at | date: dateFormat.simple }]}</li>
+        <li class="list-group-item"><span class="list-group-label">Author:</span> <span class="fa fa-user"></span> <a ng-href="sequences.selected.owner.url">{[{ sequences.selected.owner.name }]}</a></li>
+        <li class="list-group-item"><span class="list-group-label">Description:</span> {[{ sequences.selected.description }]}</li>
+      </ul>
+
+      {% if collection.is_sequencing_enabled%}
+      <div class="panel-footer">
+        <button type="button" class="btn btn-success" ng-click="updateSequence('{% url "media_classification:sequence_update" %}')">Update</button>
+        <button type="button" class="btn btn-danger" ng-click="deleteSequence('{% url "media_classification:sequence_delete" %}')">Delete</button>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+  {% endif %}
+</div>

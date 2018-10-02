@@ -1,0 +1,17 @@
+
+{% if not is_readonly %}
+  {{ multiple_classify_form }}
+
+  {% if not user_classification  %}
+    <button type="submit" class="btn btn-success">Add classification</button>
+    <button type="submit" class="btn btn-success" id="classify-multiple" name="classify_multiple" disabled>Classify multiple</button>
+  {% else %}
+    <button type="submit" class="btn btn-success">Update classification</button>
+    <button type="submit" class="btn btn-success" id="classify-multiple" name="classify_multiple" disabled>Classify multiple</button>
+  {% endif %}
+
+  {% if is_project_admin %}
+    <button type="submit" class="btn btn-primary" name="approve_classification">Approve classification</button>
+    <button type="submit" class="btn btn-primary" id="approve-multiple" name="approve_multiple" disabled>Approve multiple</button>
+  {% endif %}
+{% endif %}

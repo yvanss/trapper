@@ -1,0 +1,27 @@
+{% extends "index.html" %}
+
+{% load common_tags %}
+{% load crispy_forms_tags %}
+
+{% block data_app %}classification::upload{% endblock data_app %}
+
+{% block main_menu %}{% nav_active 'menu_media_classification' %}{{ block.super }}{% endblock main_menu %}
+
+{% block content %}
+<div class="container">
+  <div class="col-md-6 col-md-offset-3">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h2 class="panel-title">Export classifications</h2>
+      </div>
+
+      <form action="" method="post" enctype="multipart/form-data" class="panel-body">
+        {% crispy form form.helper %}
+        <fieldset>
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </fieldset>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock content %}

@@ -1,0 +1,11 @@
+{% extends 'index.html' %}
+
+{% load common_tags %}
+
+
+{% block main_menu %}{% nav_active 'menu_research' %}{{ block.super }}{% endblock main_menu %}
+
+{% block content %}
+  {% block section_content %}{% endblock section_content %}
+{% endblock content %}
+

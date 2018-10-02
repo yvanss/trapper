@@ -1,0 +1,38 @@
+{% load staticfiles %}
+
+<script src="{% static "storage/reqs/leaflet/leaflet-src.js" %}"></script>
+<script src="{% static "editable/Leaflet.Editable.js" %}"></script>
+<!-- <script src="{% static "storage/reqs/editable/Leaflet.Editable.js" %}"></script> -->
+<script src="{% static "storage/reqs/hash/leaflet-hash.js" %}"></script>
+<script src="{% static "storage/reqs/i18n/Leaflet.i18n.js" %}"></script>
+<script src="{% static "storage/reqs/editinosm/Leaflet.EditInOSM.js" %}"></script>
+<script src="{% static "storage/reqs/minimap/Control.MiniMap.js" %}"></script>
+<script src="{% static "storage/reqs/csv2geojson/csv2geojson.js" %}"></script>
+<script src="{% static "storage/reqs/togeojson/togeojson.js" %}"></script>
+<script src="{% static "storage/reqs/osmtogeojson/osmtogeojson.js" %}"></script>
+<script src="{% static "storage/reqs/loading/Control.Loading.js" %}"></script>
+<script src="{% static "storage/reqs/markercluster/leaflet.markercluster-src.js" %}"></script>
+<script src="{% static "storage/reqs/contextmenu/leaflet.contextmenu-src.js" %}"></script>
+<script src="{% static "storage/reqs/label/leaflet.label-src.js" %}"></script>
+<script src="{% static "storage/reqs/georsstogeojson/GeoRSSToGeoJSON.js" %}"></script>
+<script src="{% static "storage/reqs/heat/leaflet-heat.js" %}"></script>
+<script src="{% static "storage/reqs/toolbar/leaflet.toolbar-src.js" %}"></script>
+<script src="{% static "storage/reqs/formbuilder/Leaflet.FormBuilder.js" %}"></script>
+<script src="{% static "storage/reqs/measurable/Leaflet.Measurable.js" %}"></script>
+<script src="{% static "storage/reqs/togpx/togpx.js" %}"></script>
+<script src="{% static "storage/reqs/tokml/tokml.js" %}"></script>
+{% if locale %}
+    <script src="{% static "storage/src/locale/{{ locale }}.js" %}"></script>
+{% endif %}
+<script src="{% static "storage/src/js/leaflet.storage.core.js" %}"></script>
+<script src="{% static "storage/src/js/leaflet.storage.popup.js" %}"></script>
+<script src="{% static "storage/src/js/leaflet.storage.xhr.js" %}"></script>
+<script src="{% static "storage/src/js/leaflet.storage.forms.js" %}"></script>
+<script src="{% static "storage/src/js/leaflet.storage.icon.js" %}"></script>
+<script src="{% static "storage/src/js/leaflet.storage.features.js" %}"></script>
+<script src="{% static "storage/src/js/leaflet.storage.layer.js" %}"></script>
+<script src="{% static "storage/src/js/leaflet.storage.controls.js" %}"></script>
+<script src="{% static "storage/src/js/leaflet.storage.slideshow.js" %}"></script>
+<script src="{% static "storage/src/js/leaflet.storage.tableeditor.js" %}"></script>
+<script src="{% static "storage/src/js/leaflet.storage.js" %}"></script>
+<script src="{% static "storage/contrib/js/storage.ui.default.js" %}"></script>

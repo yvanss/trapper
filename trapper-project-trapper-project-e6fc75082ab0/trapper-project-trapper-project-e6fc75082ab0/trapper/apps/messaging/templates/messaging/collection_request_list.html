@@ -1,0 +1,68 @@
+{% extends "messaging/index.html" %}
+
+{% block messaging_collection_request %}primary{% endblock %}
+{% block data_app %}message::preview{% endblock %}
+
+{% block section_content %}
+
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h2 class="panel-title">Messages</h2>
+    </div>
+
+    {% if collection_requests %}
+    <table class="table table-striped">
+      <thead>
+      <tr>
+        <th>Sender</th>
+        <th>Message</th>
+        <th>Research project</th>
+        <th>Collection</th>
+        <th>Action</th>
+      </tr>
+      </thead>
+
+      <tbody>
+      {% for collection_request in collection_requests %}
+        <tr>
+          <td><a href="{{ collection_request.message.user_from.userprofile.get_absolute_url }}">{% pretty_username collection_request.message.user_from %}</a></td>
+          <td>
+            <span class="fa fa-circle{% if not collection_request.message.is_new %}-o{% endif %}"></span>
+            <a href="{{ collection_request.message.get_absolute_url }}" >View Message
+            </a>
+          </td>
+          {% with collection_request.project as project %}
+            <td>
+              <a href="{% url "research:project_detail" project.pk %}">{{ project.name }}</a></td>
+          {% endwith %}
+          <td>
+            {% for collection in collection_request.collections.all %}
+              <a href="{% url "storage:collection_detail" collection.pk %}">{{ collection.name }}</a>
+            {% endfor %}
+          </td>
+
+          <td>
+            {% if collection_request.resolved_at %}
+              {% if collection_request.is_approved %}<b class="text-green">Approved</b>{% else %}<b class="text-red">Rejected</b>{% endif %} at {{ collection_request.resolved_at|date:"d.m.Y, H:i" }}
+            {% else %}
+              <button type="button" class="btn btn-link" data-resolve="{% url 'messaging:collection_request_resolve' collection_request.pk %}" data-type="collection">Resolve</button>
+            {% endif %}
+            {% if collection_request.is_approved %}
+              <p><button type="button" class="btn btn-link" data-revoke="{% url 'messaging:collection_request_revoke' collection_request.pk %}" data-type="collection">Revoke</button></p>
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    {% include 'common/pagination.html' %}
+
+    {% else %}
+      <div class="alert alert-warning ng-binding">
+        <span class="fa fa-info"></span> No collection requests available.
+      </div>
+
+    {% endif %}
+  </div>
+
+{% endblock section_content %}

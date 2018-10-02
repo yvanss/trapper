@@ -1,0 +1,8 @@
+{% extends "messaging/index.html" %}
+
+{% block messaging_message_inbox %}primary{% endblock %}
+{% block data_app %}message::list{% endblock %}
+
+{% block section_content %}
+  {% include "messaging/message_list.html" %}
+{% endblock section_content %}

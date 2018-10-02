@@ -1,0 +1,83 @@
+{% extends "geomap/index.html" %}
+
+{% block data_app %}deployment::preview{% endblock data_app %}
+
+{% block section_content %}
+
+  <div class="container">
+
+    <div class="nav-secondary nav-right">
+      {% if deployment.can_delete %}
+        <a href="{% url "geomap:deployment_delete" deployment.pk %}" class="btn btn-danger btn-delete"><span class="fa fa-trash-o"></span> Delete</a>
+      {% endif %}
+
+      {% if deployment.can_update %}
+        <a href="{% url "geomap:deployment_update" deployment.pk %}" class="btn btn-default"><span class="fa fa-pencil"></span> Update</a>
+      {% endif %}
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h2 class="panel-title">ID: {{ deployment.deployment_id }}</h2>
+          </div>
+          <ul class="list-group list-group-rich">
+            <li class="list-group-item"><span class="list-group-label">Deployment code:</span> {{ deployment.deployment_code }}</li>
+            <li class="list-group-item"><span class="list-group-label">Research project:</span> {{ deployment.research_project.acronym }}</li>
+            <li class="list-group-item"><span class="list-group-label">Start date :</span> {{ deployment.start_date_tz|date:"d.m.Y, H:i:s O" }}</li>
+            <li class="list-group-item"><span class="list-group-label">End date :</span> {{ deployment.end_date_tz|date:"d.m.Y, H:i:s O" }}</li>
+            <li class="list-group-item"><span class="list-group-label">Correct setup:</span> {{ deployment.correct_setup }}</li>
+            <li class="list-group-item"><span class="list-group-label">Correct tstamp:</span> {{ deployment.correct_tstamp }}</li>
+            <li class="list-group-item"><span class="list-group-label">View quality:</span> {{ deployment.view_quality }}</li>
+            <li class="list-group-item"><span class="list-group-label">Owner:</span> <span class="fa fa-user"></span> <a href="{{ deployment.owner.userprofile.get_absolute_url }}">{{ deployment.owner|pretty_username }}</a></li>
+            <li class="list-group-item"><span class="list-group-label">Managers:</span><span class="fa fa-users"></span>
+            {% for manager in deployment.managers.all %}
+                <a href="{% url 'accounts:show_profile' manager.username %}">{{ manager|pretty_username }}</a>{% if not forloop.last %},{% endif %}
+            {% endfor %}
+            </li>
+          </ul>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h2 class="panel-title">Tags</h2>
+          </div>
+          
+          <div class="panel-body">
+            <div class="tags-list">
+              {% for key in deployment.tags.all %}
+              <span class="label label-default ng-binding ng-scope">{{ key }}</span>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+       
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h2 class="panel-title">Comments</h2>
+          </div>
+          <div class="panel-body">
+            <p>{{ deployment.comments|safe }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h2 class="panel-title">Location: {{ deployment.location.location_id }}</h2>
+            <a href="{% url "geomap:map_view" %}?locations_map={{ deployment.location.pk }}" class="btn"><span class="fa fa-globe"></span> Large map</a>
+          </div>
+
+          <div class="panel-body">
+            <div id="location_small_map" style="width: 523px; height: 300px; text-align: center;" 
+                 latlng="{{ deployment.location.latlng }}">
+              map placeholder
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+{% endblock section_content %}

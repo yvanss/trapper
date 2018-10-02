@@ -1,0 +1,231 @@
+/*.leaflet-control-filter-locations {
+    top: 0;
+    right: 50px;
+    position: absolute;
+}*/
+
+.leaflet-control-filter-locations a {
+    margin-right: 0px;
+    background-image: url("../img/search.png");
+}
+
+.leaflet-control-clear-filters-locations a {
+    margin-right: 0px;
+    background-image: url("../img/clear.png");
+}
+
+.leaflet-control-back-to-locations a {
+    margin-right: 0px;
+    background-image: url("../img/locations.png");
+}
+
+.leaflet-control-back-to-resources a {
+    margin-right: 0px;
+    background-image: url("../img/resources.png");
+}
+
+.leaflet-control-back-to-collections a {
+    margin-right: 0px;
+    background-image: url("../img/collections.png");
+}
+
+.leaflet-control-back-to-classifications a {
+    margin-right: 0px;
+    background-image: url("../img/classifications.png");
+}
+
+.filter-locations-layer-select {
+    padding-top: 10px;
+}
+
+.leaflet-draw {
+    display: none;
+}
+
+.storage-edit-enabled .leaflet-draw {
+    display: block;
+}
+
+.select2-container {
+    height: auto !important;
+}
+
+.button-container {
+    margin-top: 10px;
+    margin-bottom: 70px;
+}
+
+.button-container button {
+    margin-right: 10px;
+}
+
+.storage-loader {
+    background-color: #f00 !important;
+}
+
+.hidden {
+    display: none;
+}
+
+/* GEOMAP styles */
+.gm-plain-container {
+    padding: 0 !important;
+}
+
+.gm-item {
+    background: #f8f8f8;
+}
+
+.gm-title {
+    margin: 0 20px 10px;
+    padding: 20px 0 0;
+    font-size: 24px;
+}
+
+.gm-search + ul > li {
+    padding: 0 0 40px;
+}
+
+.gm-details {
+    margin: 0 20px;
+}
+
+ul .gm-details {
+    overflow: hidden;
+    margin: 0 0 0 110px;
+}
+
+ul .gm-no-media .gm-details {
+    margin: 0;
+}
+
+.gm-details li {
+    padding: 5px 0;
+    border-top: 1px solid #ddd;
+
+}
+
+.gm-details span {
+    display: inline-block;
+    width: 80px;
+    margin-right: 10px;
+    text-align: right;
+    font-weight: bold;
+}
+
+.gm-name {
+
+}
+
+.gm-owner {
+
+}
+
+.gm-latlabel {
+
+}
+
+.gm-lnglabel {
+
+}
+
+.gm-desc {
+
+}
+
+.gm-menu {
+    margin-top: 20px;
+
+    padding: 0 20px;
+}
+
+.gm-subitems {
+    padding: 20px;
+    background-color: #fff;
+
+}
+
+.gm-subitems h3 {
+    font-size: 16px;
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.gm-info {
+    text-align: center;
+
+    font-weight: bold;
+    margin: 0;
+}
+
+.gm-media {
+    float: left;
+    margin-right: 10px
+}
+
+.gm-search {
+    margin: 0 0 20px;
+}
+
+.gm-filters {
+    margin-bottom: 20px;
+}
+
+.gm-checkbox {
+    margin: 0 10px;
+}
+
+.gm-checkbox input[type="checkbox"] + label {
+    margin: 0 0 0 5px;
+    padding: 0;
+}
+
+.btn + .btn {
+    margin-left: 5px;
+}
+
+/* filters */
+
+#filter-locations-form .select2-container.select2-container-multi {
+    padding: 0;
+    width: 100%;
+
+    border: 0;
+}
+
+#filter-locations-form .select2-container-multi .select2-choices {
+    border-color: #ccc;
+    background: none;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) inset;
+    border-radius: 2px;
+}
+
+#filter-locations-form .select2-container-multi.select2-container-active .select2-choices {
+    border-color: #5897fb;
+}
+
+#filter-locations-form input[type="text"] {
+    height: 34px;
+}
+
+.filter-locations-layer-select {
+    display: flex;
+}
+
+.filter-locations-layer-select select {
+    flex: 1;
+    width: auto !important;
+}
+
+h1, h2, h3 {
+    margin-top: 0px;
+    margin-bottom: 10px;
+}
+
+#storage-ui-container select {
+    width: 100%;
+}
+
+.form-inline .form-group {
+    display: inline;
+}

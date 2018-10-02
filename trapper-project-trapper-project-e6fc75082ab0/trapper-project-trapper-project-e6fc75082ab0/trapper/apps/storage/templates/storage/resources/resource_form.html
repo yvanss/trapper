@@ -1,0 +1,14 @@
+{% load crispy_forms_tags %}
+
+{% if object.pk %}
+    {% url 'storage:resource_update' object.pk as resource_url %}
+{% else %}
+    {% url 'storage:resource_create' as resource_url %}
+{% endif %}
+
+<form action="{{ resource_url }}" method="post" class="panel-body" enctype="multipart/form-data">
+    {% crispy form form.helper %}
+    <fieldset>
+        <button type="submit" class="btn btn-primary">{% if object.pk %}Update{% else %}Add{% endif %} resource</button>
+    </fieldset>
+</form>

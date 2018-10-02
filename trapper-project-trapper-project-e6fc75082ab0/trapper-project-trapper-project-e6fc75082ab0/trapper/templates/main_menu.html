@@ -1,0 +1,135 @@
+{% load variables_tags %}
+
+<nav class="navbar navbar-default navbar-fixed-top navbar-inverse" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="{% url "trapper_index" %}">Trapper</a>
+    </div>
+    
+    <ul class="nav navbar-nav">
+
+      <li class="dropdown">
+        <a href="#">
+          <span class="fa fa-info"></span>
+          Info
+          <span class="fa fa-angle-down"></span>
+        </a>
+        <ul class="dropdown-menu">
+          <li><a href="{% url "djangobb:index" %}">Forum</a></li>
+          <li class="divider"></li>
+        </ul>
+      </li>
+
+      {% if is_authenticated %}
+      {% with user.get_profile as user_profile %}
+      <li class="dropdown {{ menu_messages }}">
+        <a href="{% url 'messaging:index' %}">
+          <span class="fa {% if user_profile.has_unread_messages %}text-primary fa-envelope{% else %}fa-envelope-o{% endif %}"></span>
+          Messaging
+          <span class="fa fa-angle-down"></span>
+        </a>
+        
+        <ul class="dropdown-menu">
+          <li><a href="{% url 'messaging:message_inbox' %}">Inbox</a></li>
+          <li><a href="{% url 'messaging:message_outbox' %}">Outbox</a></li>
+          <li><a href="{% url 'messaging:message_create' %}"><span class="fa fa-pencil"></span> New message</a></li>
+          <li class="divider"></li>
+          <li><a href="{% url "messaging:collection_request_list" %}">Requested Collections </a></li>
+        </ul>
+      </li>
+      {% endwith %}
+      {% endif %}
+
+      {% if is_authenticated %}
+      <li class="dropdown {{ menu_storage }}">
+        <a href="{% url 'storage:storage_index' %}">
+          <span class="fa fa-database"></span>
+          Storage
+          <span class="fa fa-angle-down"></span>
+        </a>
+        <ul class="dropdown-menu">
+          <li><a href="{% url "storage:resource_list" %}">Resources (available)</a></li>
+          <li><a href="{% url "storage:resource_create" %}"><span class="fa fa-plus"></span> Add resource</a></li>
+          <li class="divider"></li>
+          <li><a href="{% url 'storage:collection_list' %}">Collections (available)</a></li>
+          <li><a href="{% url 'storage:collection_ondemand_list' %}">Collections (on demand)</a></li>
+          <li><a href="{% url "storage:collection_upload" %}">
+              <span class="fa fa-upload"></span> Upload collection</a>
+          </li>
+        </ul>
+      </li>
+      {% endif %}
+      
+      {% if is_authenticated %}
+
+      <li class="dropdown {{ menu_research }}">
+        <a href="{% url 'research:project_index' %}">
+          <span class="fa fa-flask"></span>
+          Research
+          <span class="fa fa-angle-down"></span>
+        </a>
+        
+        <ul class="dropdown-menu">
+          <li><a href="{% url 'research:project_list' %}">Research project</a></li>
+          <li><a href="{% url 'research:project_create' %}"><span class="fa fa-plus"></span> Add research project</a></li>
+        </ul>
+      </li>
+            
+      <li class="dropdown {{ menu_media_classification }}">
+        <a href="{% url "media_classification:project_index" %}">
+          <span class="fa fa-cubes"></span>
+          Media classification
+          <span class="fa fa-angle-down"></span>
+        </a>
+        <ul class="dropdown-menu">
+          <li><a href="{% url "media_classification:project_list" %}">Classification projects</a></li>
+          <li><a href="{% url "media_classification:project_create" %}"><span class="fa fa-plus"></span> Add classification project</a></li>
+          <li><a href="{% url "media_classification:classification_import" %}"><span class="fa fa-upload"></span> Import classifications</a></li>
+          <li class="divider"></li>
+          <li><a href="{% url "media_classification:classificator_list" %}">Classificators</a></li>
+          <li><a href="{% url "media_classification:classificator_create" %}"><span class="fa fa-plus"></span> Add classificator</a></li>
+        </ul>
+      </li>
+
+      {% endif %}
+
+      {% if is_authenticated %}
+      <li class="dropdown {{ menu_geomap }}">
+        <a href="#">
+          <span class="fa fa-globe"></span>
+          Map
+          <span class="fa fa-angle-down"></span>
+        </a>
+        <ul class="dropdown-menu">
+          <li><a href="{% url 'geomap:map_view' %}?action=full">Show map</a></li>
+          <li><a href="{% url 'geomap:map_list' %}">Saved maps</a></li>
+          <li class="divider"></li>
+          <li><a href="{% url 'geomap:location_list' %}">Locations</a></li>
+          <li><a href="{% url "geomap:location_create" %}"><span class="fa fa-plus"></span> Add location</a></li>
+          <li><a href="{% url 'geomap:location_import' %}"><span class="fa fa-upload"></span> Import locations</a></li>
+          <li class="divider"></li>
+          <li><a href="{% url 'geomap:deployment_list' %}">Deployments</a></li>
+          <li><a href="{% url "geomap:deployment_create" %}"><span class="fa fa-plus"></span> Add deployment</a></li>
+          <li><a href="{% url 'geomap:deployment_import' %}"><span class="fa fa-upload"></span> Import deployments</a></li>
+        </ul>
+      </li>
+      
+      {% if user.is_staff %}
+      <li><a href="{% url "admin:index" %}"><span class="fa fa-cogs"></span> Admin site</a></li>
+      {% endif %}
+      
+    </ul>
+    {% endif %}
+
+    <ul class="nav navbar-nav pull-right">
+
+      {% if is_authenticated %}
+      <li class="{{ menu_profile }}"><a href="{% url "accounts:mine_profile" %}"><span class="fa fa-user"></span> {{ user|pretty_username }}</a></li>
+      <li><a href="{% url "account_logout" %}"><span class="fa fa-lock"></span> Logout</a></li>
+      {% else %}
+      <li class="{{ menu_login }}"><a href="{% url "account_login" %}"><span class="fa fa-lock"></span> Login</a></li>
+      <li class="{{ menu_signup }}"><a href="{% url "account_signup" %}"><span class="fa fa-cog"></span> Register</a></li>
+      {% endif %}
+    </ul>
+  </div>
+</nav>

@@ -1,0 +1,8 @@
+{% load crispy_forms_tags %}
+
+<form action="." method="post" class="panel-body">
+    {% crispy form form.helper %}
+    <fieldset>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </fieldset>
+</form>

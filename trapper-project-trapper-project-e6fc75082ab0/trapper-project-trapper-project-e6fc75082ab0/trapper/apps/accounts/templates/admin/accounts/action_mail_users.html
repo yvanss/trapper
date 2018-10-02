@@ -1,0 +1,72 @@
+{% extends "admin/base_site.html" %}
+
+{% load i18n grp_tags admin_urls %}
+
+{% block breadcrumbs %}
+    <ul class="grp-horizontal-list">
+        <li><a href="{% url 'admin:index' %}">{% trans "Home" %}</a></li>
+        <li><a href="{% url 'admin:app_list' app_label='auth' %}">Auth</a></li>
+        <li><a href="{% url 'admin:accounts_user_changelist' %}">Users</a></li>
+        <li>{{ title }}</li>
+    </ul>
+{% endblock %}
+
+{% block extrastyle %}
+    <style>
+        .grp-list {
+            padding: 5px 10px 4px;
+        }
+        .grp-list li {
+            font-weight: bold;
+        }
+        .clear-both {
+            clear: both;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <form action="." method="post">
+      {% csrf_token %}
+      <div class="g-d-c">
+        <div class="grp-group">
+          <h2>Email content:</h2>
+          <fieldset class="grp-module wide">
+            <div class="grp-row grp-cells-1 {% if form.subject.errors %} grp-errors{% endif %}">
+              <div class="l-2c-fluid l-d-4">
+                <div class="c-1"><label for="id_subject">Subject</label></div>
+                <div class="c-2">{{ form.subject }}</div>
+              </div>
+            </div>
+            <div class="grp-row grp-cells-1 {% if form.text.errors %} grp-errors{% endif %}">
+              <div class="l-2c-fluid l-d-4">
+                <div class="c-1"><label for="id_text">Text</label></div>
+                <div class="c-2">{{ form.text }}</div>
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset class="grp-module wide">
+            <h2 class="clear-both">The email will be send to the following users:</h2>
+            <fieldset class="grp-module wide">
+              <ul class="grp-list">
+                {% for user in objects %}
+                <li> {{ user.username }} | {{ user.email }} </li>
+                {% endfor %}
+              </ul>
+            </fieldset>
+        </div>
+      </div>
+      <div class="grp-module grp-submit-row grp-fixed-footer">
+        <ul>
+          <li class="grp-float-left"><a href="./" class="grp-button grp-cancel-link">{% trans "Cancel" %}</a></li>
+          <li><input type="submit" value="Submit" class="grp-button grp-default" /></li>
+        </ul>
+        {% for field in form.hidden_fields %}
+        {{ field }}
+        {% endfor %}
+        <input type="hidden" name="action" value="mail_users_action">
+        <input type="hidden" name="do_action" value="yes">
+      </div>
+    </form>
+{% endblock content %}

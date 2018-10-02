@@ -1,0 +1,102 @@
+{% extends 'storage/index.html' %}
+
+{% block ng_app %}ng-app="trapperGrid"{% endblock ng_app %}
+
+{% block data_app %}collection::preview{% endblock data_app %}
+
+
+{% block section_content %}
+
+{% url 'storage:api-resource-list' as resource_url %}
+
+<div
+  class="container"
+  ng-controller="GridController">
+  <div class="row">
+    <div class="col-md-6">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h2 class="panel-title">Collection</h2>
+        </div>
+
+        <div class="panel-body">
+          {% with orph=collection.get_orphaned_resources %}
+          <h2>
+            {{ collection.name }}
+            {% if orph %}
+            <action-warning ng-click="execute($event, 'This collection contains <strong>{{ orph|length }}</strong> resources that can not be accessed as most probably you have lost your access permission. To remove them from this collection <a href=&quot;{% url "storage:collection_resource_delete_orphaned" collection.pk %}&quot;> click here</a>.')">
+            </action-warning>
+          </h2>
+          {% endif %}
+          {% endwith %}
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h2 class="panel-title">Actions for collection</h2>
+        </div>
+        <div class="panel-body">
+	  <div class="nav-secondary nav-right">
+          {% if user.is_authenticated %}
+          <button id="action-addto-research" type="button" class="btn btn-success pull-left" data-url="{% url "research:project_collection_add" %}" data-urllist="{% url 'research:api-research-project-list' %}?only-updateable&no-pagination&format=json" data-pk="{{ collection.pk }}">Add to research project</button>
+          {% endif %}
+            {% if collection.can_update %}
+            <a href="{% url "storage:collection_update" collection.pk %}"><button type="button" class="btn btn-default "><span class="fa fa-pencil"></span> Update</button></a>
+            {% endif %}
+            {% if collection.can_delete %}
+            <a href="{% url "storage:collection_delete" collection.pk %}" class="btn btn-danger btn-delete"><span class="fa fa-trash-o "></span> Delete</a>
+            {% endif %}
+	  </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h2 class="panel-title">Details</h2>
+        </div>
+
+        <ul class="list-group list-group-rich">
+          <li class="list-group-item"><span class="list-group-label">Owner:</span> <span class="fa fa-user"></span> <a href="{% url 'accounts:show_profile' collection.owner %}">{{ collection.owner|pretty_username }}</a></li>
+          {% with collection.managers.all as collection_managers %}
+          {% if collection_managers %}
+          <li class="list-group-item"><span class="list-group-label">Managers:</span><span class="fa fa-users"></span>
+            {% for manager in collection.managers.all %}
+            <a href="{% url 'accounts:show_profile' manager.username %}">{{ manager|pretty_username }}</a>{% if not forloop.last %},{% endif %}
+            {% endfor %}
+          </li>
+          {% endif %}
+          {% endwith %}
+          <li class="list-group-item"><span class="list-group-label">Status:</span> {{ collection.get_status_display }} </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h2 class="panel-title">Description</h2>
+        </div>
+
+        <div class="panel-body">
+          <p>{{ collection.description|default:""|safe }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    {% with grid_context=resource_context %}
+    {% include 'storage/resources/resource_grid.html' %}
+    {% endwith %}
+  </div>
+
+</div>
+{% endblock section_content %}

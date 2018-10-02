@@ -1,0 +1,10 @@
+{% load crispy_forms_tags %}
+
+{% url 'geomap:deployment_bulk_create' as deployments_url  %}
+
+<form action="{{ deployments_url }}" method='post' class="panel-body">
+  {% crispy form form.helper %}
+  <fieldset>
+    <button type="submit" class="btn btn-primary">Create deployments</button>
+  </fieldset>
+</form>

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block master_content %}
+
+{% if form.errors %}
+<p>Your username and password didn't match. Please try again.</p>
+{% endif %}
+
+<h1>Log-in to Trapper</h1>
+
+<form role="form" method="post" action="{% url 'django.contrib.auth.views.login' %}">
+	{% csrf_token %}
+	<div class="form-group">
+		<label for="id_{{form.username.name}}">{{form.username.label}}</label>
+		<div class="input-group">
+			<span class="input-group-addon glyphicon glyphicon-user"></span>
+			<input type="text" class="form-control" id="id_{{form.username.name}}" name="{{form.username.name}}" placeholder="Enter username">
+		</div>
+	</div>
+	<div class="form-group">
+		<label for="id_{{form.password.name}}">{{form.password.label}}</label>
+		<div class="input-group">
+			<span class="input-group-addon glyphicon glyphicon-lock"></span>
+			<input type="password" class="form-control" id="id_{{form.password.name}}" name="{{form.password.name}}" placeholder="Enter password">
+		</div>
+	</div>
+	<input type="submit" class="btn btn-primary" value="Sign In" />
+	<input type="hidden" name="next" value="{{ next }}" />
+</form>
+
+{% endblock %}

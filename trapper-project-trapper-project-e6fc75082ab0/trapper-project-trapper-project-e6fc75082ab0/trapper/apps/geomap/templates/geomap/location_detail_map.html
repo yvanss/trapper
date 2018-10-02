@@ -1,0 +1,37 @@
+{% load thumbnail %}
+{% load i18n %}
+<h2 id="location_resource_details">{{ location.location_id }}</h2>
+<h3>{{ location.name|default:"" }}</h3>
+<p><b>{% trans "Latitude" %}</b>: {{ location.coordinates.y }}, <b>{% trans "Longitude" %}</b>: {{ location.coordinates.x }}</p>
+<p>Owner: {{ location.owner }}</p>
+<p>{{ location.description|default:"" }}</p>
+<ul class="nav nav-tabs">
+  <li role="presentation" class="active"><a href="#">Resources</a></li>
+  <li role="presentation"><a href="#">Collections</a></li>
+  <li role="presentation"><a href="#">Clasifications</a></li>
+</ul>
+{% if resources %}
+<div id="resources_id">
+  <input class="search" placeholder="Search" />
+  <button class="sort" data-sort="resources_name">
+    {% trans "Sort by name" %}
+  </button>
+  <ul class="list">
+  {% for r in resources %}
+    <li>
+      <h2 class="resources_name">{{ r.name }}</h2>
+      <a href="/storage/resource/detail/{{ r.pk }}/" target="_blank"><img src="{{ r.file|thumbnail_url:'default' }}" alt="{{r.name}}" /></a>
+      <p>Date: {{ r.date_recorded }}, Type: {{ r.resource_type }}</p>
+      <p>Owner: {{ r.owner }}</p>
+      <p class='hidden resources_desc'>{{r.description|default:""}}</p>
+    </li>
+  {% endfor %}
+  </ul>
+</div>
+{% else %}
+
+<p>{% trans "No resources for this location." %}</p>
+
+{% endif %}
+
+

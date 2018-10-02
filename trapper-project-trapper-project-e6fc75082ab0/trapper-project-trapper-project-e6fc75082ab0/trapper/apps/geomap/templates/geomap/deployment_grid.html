@@ -1,0 +1,156 @@
+{% extends "common/grid.html" %}
+
+{% block filters %}
+
+<div class="form-group form-filter form-datepicker">
+  <label class="control-label">Start date</label>
+  <div class="input-group input-daterange"
+       filter-daterange="filters.sdate"
+       filter-name="'sdate'"
+       filter-service="filter">
+    <input type="text" class="form-control" placeholder="from">
+    <span class="input-group-addon">
+      <span class="fa fa-calendar"></span>
+    </span>
+    <input type="text" class="form-control" placeholder="to">
+  </div>
+</div>
+
+<div class="form-group form-filter form-datepicker">
+  <label class="control-label">End date</label>
+  <div class="input-group input-daterange"
+       filter-daterange="filters.edate"
+       filter-name="'edate'"
+       filter-service="filter">
+    <input type="text" class="form-control" placeholder="from">
+    <span class="input-group-addon">
+      <span class="fa fa-calendar"></span>
+    </span>
+    <input type="text" class="form-control" placeholder="to">
+  </div>
+</div>
+
+<div class="form-group form-filter">
+  <label for="correct_setup" class="control-label">Corr. setup</label>
+  <select
+     id="correct_setup"
+     class="form-control"
+     filter-text="correct_setup"
+     filter-service="filter"
+     ng-model="filters.correct_setup"
+     ng-options="option.value as option.label for option in optionList.bool">
+  </select>
+</div>
+
+<div class="form-group form-filter">
+  <label for="correct_tstamp" class="control-label">Corr. tstamp</label>
+  <select
+     id="correct_tstamp"
+     class="form-control"
+     filter-text="correct_tstamp"
+     filter-service="filter"
+     ng-model="filters.correct_tstamp"
+     ng-options="option.value as option.label for option in optionList.bool">
+  </select>
+</div>
+
+<div class="form-group form-filter-full">
+  <label for="owners" class="control-label">Research</label>
+  <select
+     type="text"
+     id="research_projects"
+     class="select2-default"
+     multiple
+     ng-model="filters.research_project"
+     filter-tokens="research_project"
+     filter-service="filter">
+    {% for project in grid_context.research_projects %}
+    <option value="{{ project.0 }}">{{ project.1 }}</option>
+    {% endfor %}
+  </select>
+</div>
+
+<div class="form-group form-filter-full">
+  <label for="tags" class="control-label">Tags</label>
+  <select
+     type="text"
+     id="tags"
+     class="select2-default"
+     multiple
+     ng-model="filters.tags"
+     filter-tokens="tags"
+     filter-service="filter">
+    {% for tag in grid_context.tags %}
+    <option value="{{ tag.0 }}">{{ tag.1 }}</option>
+    {% endfor %}
+  </select>
+</div>
+
+<div class="form-group form-filter-full">
+  <label for="locations" class="control-label">Locations</label>
+  <select
+     type="text"
+     id="locations"
+     class="select2-default"
+     multiple
+     ng-model="filters.location"
+     filter-tokens="location"
+     filter-service="filter">
+    {% for location in grid_context.locations %}
+    <option value="{{ location.0 }}">{{ location.1 }}</option>
+    {% endfor %}
+  </select>
+</div>
+
+{% endblock %}
+
+{% block custom_actions %}
+
+{% url 'geomap:map_view' as new_map_url %}
+<action-show-map data-type="deployments" data-url="{{ new_map_url }}" data-field="pk">
+  <select>
+    <option value="{{ new_map_url }}" selected>New map</option>
+    {% for map in grid_context.maps %}
+    <option value="{% url 'geomap:map' slug=map.slug pk=map.pk %}">{{ map }}</option>
+    {% endfor %}
+  </select>
+</action-show-map>
+
+<a href="{% url "geomap:deployment_import" %}" 
+   class="btn btn-default" role="button">
+  <span class="fa fa-upload"></span> Import
+</a>
+<action-export-with-filters ng-click="execute('{% url "geomap:api-deployment-export" %}')">
+</action-export-with-filters>
+
+{% endblock%}
+
+{% block custom_actions_list %}
+
+<li ng-class="{'disabled': !filters.owner}">
+  <action-bulk-update
+     ng-click="execute('{% url "geomap:deployment_bulk_update" %}')">
+  </action-bulk-update>
+</li>
+<li ng-class="{'disabled': !filters.owner}">
+  <action-remove-selected ng-click="execute($event, '{% url "geomap:deployment_delete_multiple" %}')">
+  </action-remove-selected>
+</li>
+
+{% endblock %}
+
+{% block table_cells %}
+
+<td data-title="'ID'" sortable="'deployment_id'">{[{ record.deployment_id }]}</td>
+<td data-title="'Location'" sortable="'location_id'">{[{ record.location_id }]}</td>
+<td data-title="'Research project'" sortable="'research_project'">{[{ record.research_project }]}</td>
+<td data-title="'Start date'" sortable="'start_date'">{[{ record.start_date | dateTZ: dateFormat.table }]}</td>
+<td data-title="'End date'" sortable="'end_date'">{[{ record.end_date | dateTZ: dateFormat.table }]}</td>
+<td data-title="'Corr. setup'" sortable="'Corr. setup'">{[{ record.correct_setup }]}</td>
+<td data-title="'Corr. tstamp'" sortable="'Corr. tstamp'">{[{ record.correct_tstamp }]}</td>
+<td data-title="'Owner'" sortable="'owner'"><a ng-href="{[{ record.owner_profile }]}">{[{ record.owner }]}</a></td>
+
+{% endblock %}
+
+{% block table_cells_extra_actions %}
+{% endblock %}

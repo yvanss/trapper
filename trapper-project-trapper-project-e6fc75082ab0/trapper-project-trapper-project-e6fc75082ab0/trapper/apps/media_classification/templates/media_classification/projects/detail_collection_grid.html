@@ -1,0 +1,114 @@
+{% extends "common/grid.html" %}
+
+{% block filters %}
+
+<div class="form-group form-filter">
+  <label for="status" class="control-label">Status</label>
+  <select
+     id="status"
+     class="form-control"
+     filter-text="status"
+     filter-service="filter"
+     ng-model="filters.status"
+     ng-options="option.value as option.label for option in optionList.status">
+  </select>
+</div>
+
+<div class="form-group form-filter">
+  <label for="status" class="control-label">Active</label>
+  <select
+     id="is_active"
+     class="form-control"
+     filter-text="is_active"
+     filter-service="filter"
+     ng-model="filters.is_active"
+     ng-options="option.value as option.label for option in optionList.bool">
+  </select>
+</div>
+
+<div class="form-group form-filter-full">
+  <label for="owners" class="control-label">Owners</label>
+  <select
+     type="text"
+     id="owners"
+     class="select2-default"
+     multiple
+     ng-model="filters.owners"
+     filter-tokens="owner"
+     filter-service="filter">
+    {% for owner in grid_context.owners %}
+    <option value="{{ owner.pk }}">{{ owner|pretty_username }}</option>
+    {% endfor %}
+  </select>
+</div>
+
+{% endblock %}
+
+{% block custom_actions %}
+
+{% if not grid_context.hide_show_on_map %}
+{% url 'geomap:map_view' as new_map_url %}
+<action-show-map data-type="collections" data-url="{{ new_map_url }}"
+                 data-field="collection_pk">
+  <select>
+    <option value="{{ new_map_url }}" selected>New map</option>
+    {% for map in grid_context.maps %}
+    <option value="{% url 'geomap:map' slug=map.slug pk=map.pk %}">{{ map }}</option>
+    {% endfor %}
+  </select>
+</action-show-map>
+{% endif %}
+
+{% if user.is_authenticated and project.can_update %}
+<action-build-sequences ng-disabled="!data.selectedCounter" ng-click="execute('{% url "media_classification:sequence_build" %}')">
+</action-build-sequences>
+{% endif %}
+
+{% endblock%}
+
+{% block custom_actions_list %}
+
+{% if user.is_authenticated and project.can_update %}
+<li>
+  <action-unlink2-selected ng-click="execute($event, '{% url "media_classification:project_collection_delete_multiple" %}')">
+  </action-unlink2-selected>
+</li>
+{% endif %}
+
+{% endblock %}
+
+{% block table_cells %}
+
+<td data-title="'Name'" sortable="'name'">{[{ record.name }]}</td>
+<td data-title="'Status'" sortable="'status'">{[{ record.status }]}</td>
+<td data-title="'Is active'" sortable="'is_active'">{[{ record.is_active }]}</td>
+<!-- <td data-title="'Crowdsourcing'" sortable="'crowdsourcing'">{[{ record.crowdsourcing }]}</td> -->
+<td data-title="'Total'">{[{ record.total_count }]}</td>
+<td data-title="'Classified'">{[{ record.classified_count }]}</td>
+<td data-title="'Approved'">{[{ record.approved_count }]}</td>
+
+{% endblock %}
+
+{% block table_cells_extra_actions %}
+</td>
+<td>
+  <action-classify-collection 
+     ng-if="record.classify_data"
+     ng-click="execute($event, record)">
+  </action-classify-collection>
+
+{% if project.deployment_based_nav %}
+  <select
+     placeholder="choose deployments (optionally)"
+     class="select2-default"
+     style="width:260px"
+     multiple
+     ng-model="filters.deployments[record.pk]"
+     filter-service="filter"
+     filter-tokens="deployment"
+     ng-if="record.classify_data"
+     ng-options="option[0] as option[1] for option in record.deployments">
+  </select>
+{% endif %}
+</td>
+{% endblock %}

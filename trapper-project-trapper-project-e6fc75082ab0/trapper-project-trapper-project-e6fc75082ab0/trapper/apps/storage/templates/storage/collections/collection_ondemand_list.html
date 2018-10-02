@@ -1,0 +1,11 @@
+{% extends 'storage/index.html' %}
+
+{% block data_app %}collection::list{% endblock data_app %}
+
+{% block ng_app %}ng-app="trapperGrid"{% endblock ng_app %}
+
+{% block section_content %}
+    {% with grid_context=collection_context %}
+    {% include 'storage/collections/collection_ondemand_grid.html' %}
+    {% endwith %}
+{% endblock section_content %}

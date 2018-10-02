@@ -1,0 +1,74 @@
+{% extends "index.html" %}
+
+{% load i18n %}
+{% load common_tags %}
+
+{% block head_title %}{% trans "Signup" %}{% endblock %}
+
+{% block main_menu %}{% nav_active 'menu_signup' %}{{ block.super }}{% endblock main_menu %}
+
+{% block content %}
+
+  <div class="container">
+    <div class="col-md-6 col-md-offset-3">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h2 class="panel-title">Sign up</h2>
+        </div>
+
+        <form class="panel-body" method="post" action="{% url 'account_signup' %}">
+          {% for error in form.non_field_errors %}
+            <p class="text-danger">{{ error }}</p>
+          {% endfor %}
+          {% csrf_token %}
+
+          <fieldset>
+            <div class="form-group form-required{% if form.email.errors %} has-error{% endif %}">
+              <label for="email" class="control-label">E-mail</label>
+              <input type="text" id="id_email" name="email" class="form-control" required>
+              {% for error in form.email.errors %}
+                <p class="text-danger">{{ error }}</p>
+              {% endfor %}
+            </div>
+
+            <div class="form-group form-required{% if form.password1.errors %} has-error{% endif %}">
+              <label for="password1" class="control-label">Password</label>
+              <input type="password" id="id_password1" name="password1" class="form-control" required>
+              {% for error in form.password1.errors %}
+                <p class="text-danger">{{ error }}</p>
+              {% endfor %}
+            </div>
+
+            <div class="form-group form-required{% if form.password2.errors %} has-error{% endif %}">
+              <label for="password2" class="control-label">Password confirmation</label>
+              <input type="password" id="id_password2" name="password2" class="form-control">
+              {% for error in form.password2.errors %}
+                <p class="text-danger">{{ error }}</p>
+              {% endfor %}
+            </div>
+            
+            {% if form.captcha %}
+            <div class="form-group form-required{% if form.captcha.errors %} has-error{% endif %}">
+              <label for="password2" class="control-label">Captcha</label>
+              {{ form.captcha }}
+              {% for error in form.captcha.errors %}
+              <p class="text-danger">{{ error }}</p>
+              {% endfor %}
+            </div>
+            {% endif %}
+
+            {% if redirect_field_value %}
+              <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+            {% endif %}
+
+            <button type="submit" class="btn btn-primary">Sign up</button>
+          </fieldset>
+        </form>
+      </div>
+    </div>
+  </div>
+
+
+{% endblock %}
+
+

@@ -1,0 +1,57 @@
+{% load crispy_forms_tags %}
+
+{% if static_form or dynamic_form %}
+<form action="." method="post" class="form-classificator">
+  {% csrf_token %}
+
+  <div class="panel panel-default tabs-repeatable" data-name="form">
+
+    <ul class="nav nav-tabs nav-rich">
+      {% if static_form %}
+      <li class="active tab-static">
+        <a href="#tab-static" data-toggle="tab"><strong>Static</strong></a>
+      </li>
+      {% endif %}
+      {% if dynamic_form %}
+        {% for form in dynamic_form %}
+      <li>
+        <a href="#tab-dynamic-{{ forloop.counter }}" data-toggle="tab"><strong>#{{ forloop.counter }} Dynamic</strong> {% if not is_readonly  %}<button class="btn btn-danger btn-remove-row btn-xs"><span class="fa fa-remove"></span></button>{% endif %}</a></li>
+        {% endfor %}
+      <li class="tab-create">{% if not is_readonly %}<button class="btn btn-success btn-add-row"><span class="fa fa-plus"></span></button>{% endif %}</li>
+      {% endif %}
+    </ul>
+
+    <div class="tab-content panel-body">
+      {% if static_form %}
+      <div class="tab-pane active" id="tab-static">
+        {% for field in static_form  %}
+        {{ field|as_crispy_field }}
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      {% if dynamic_form %}
+        {{ dynamic_form.management_form }}
+        {% for form in dynamic_form %}
+          <div class="tab-pane" id="tab-dynamic-{{ forloop.counter }}">
+            {% for field in form  %}
+            {{ field|as_crispy_field }}
+            {% endfor %}
+          </div>
+        {% endfor %}
+      {% endif %}
+    </div>
+
+    <div class="panel-footer">
+      {% include 'media_classification/classifications/classify/form_button_box.html' %}
+    </div>
+  </div>
+</form>
+<div class="hidden">
+  <div class="tab-pane" id="tab-dynamic-template">
+    {% for field in dynamic_form_template  %}
+    {{ field|as_crispy_field }}
+    {% endfor %}
+  </div>
+</div>
+{% endif %}

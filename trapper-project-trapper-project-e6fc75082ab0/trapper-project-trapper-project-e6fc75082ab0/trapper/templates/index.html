@@ -1,0 +1,74 @@
+{% load variables_tags %}
+{% load common_tags %}
+
+<!doctype html>
+<html class="no-js">
+  <head>
+    <meta charset="utf-8">
+    <title>Trapper</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/main.css">
+    <script src="{{ STATIC_URL }}js/vendor.js"></script>
+
+    {% block header %}
+    {% block scripts_prepend %}
+    {% endblock scripts_prepend %}
+    <script src="{{ STATIC_URL }}js/utils/alert.js"></script>
+    <script src="{{ STATIC_URL }}js/utils/modal.js"></script>
+    <script src="{{ STATIC_URL }}js/utils/uploader.js"></script>
+    <script src="{{ STATIC_URL }}js/utils/plugins.js"></script>
+
+    <script src="{{ STATIC_URL }}js/apps/dashboard.js"></script>
+    <script src="{{ STATIC_URL }}js/apps/classificator.js"></script>
+    <script src="{{ STATIC_URL }}js/apps/classification.js"></script>
+    <script src="{{ STATIC_URL }}js/apps/collection.js"></script>
+    <script src="{{ STATIC_URL }}js/apps/location.js"></script>
+    <script src="{{ STATIC_URL }}js/apps/deployment.js"></script>
+    <script src="{{ STATIC_URL }}js/apps/message.js"></script>
+    <script src="{{ STATIC_URL }}js/apps/research.js"></script>
+    <script src="{{ STATIC_URL }}js/apps/resource.js"></script>
+    <script src="{{ STATIC_URL }}js/apps/user.js"></script>
+
+    <script src="{{ STATIC_URL }}js/main.js"></script>
+
+    <script src="{{ STATIC_URL }}js/grid/app.js"></script>
+    <script src="{{ STATIC_URL }}js/grid/controllers.js"></script>
+    <script src="{{ STATIC_URL }}js/grid/directives.js"></script>
+    <script src="{{ STATIC_URL }}js/grid/filters.js"></script>
+    <script src="{{ STATIC_URL }}js/grid/services.js"></script>
+    {% block scripts_append %}
+    {% endblock scripts_append %}
+    {% endblock header %}
+  </head>
+
+  <body data-static-url="{{ STATIC_URL }}" {% if user.is_authenticated %}data-user="{{ user|pretty_username }}"{% endif %} data-app="{% block data_app %}dashboard{% endblock %}" {% block ng_app %}{% endblock ng_app %}>
+
+    {% with user.is_authenticated as is_authenticated %}
+    {% block main_menu %}
+      {% include 'main_menu.html' %}
+    {% endblock main_menu %}
+
+    {% if messages %}
+    <div id="alerts" class="alerts-global">
+      {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">
+        <div>
+          {{ message|safe }}
+          <button type="button" class="alert-close"></button>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="container">
+      {% block content %}
+      <!-- {% get_variable namespace='global' name='app-welcome' %} -->
+      {% endblock content %}
+    </div>
+    {% endwith %}
+
+  </body>
+</html>
+

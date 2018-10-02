@@ -1,0 +1,87 @@
+{% extends "media_classification/index.html" %}
+
+{% block section_content %}
+<div class="container">
+  <h2>Clasificator name: <strong>{{ classificator.name }}</strong>
+    <form class="pull-right" action="{% url 'media_classification:classificator_clone' pk=classificator.pk %}" method='post'>
+    {% csrf_token %}
+    <button type="submit" class="btn btn-primary">Copy this classificator</button>
+    </form>
+  </h2>
+  <div class="panel panel-default">
+
+    <div class="panel-heading">
+      <h2 class="panel-title">Dynamic form attributes</h2>
+    </div>
+    <div class="panel-body">
+      <table class="table table-striped table-rich" id="id_dynamic_attrs">
+        {% if attributes_dynamic %}
+        <thead>
+          <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>HStore</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for params in attributes_dynamic %}
+          <tr>
+            <td>{{ params.name }}</td>
+            <td><span class="label {{ params.cls }}">{{ params.type }}</span></td>
+            <td>{% if params.is_custom %}
+              <pre>{{ params.hstore }}</pre>{% endif %}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+        {% else %}
+        <tbody>
+          <tr>
+            <td colspan="5" class="alert alert-warning ng-binding"><span class="fa fa-info"></span> There are no dynamic
+              attributes defined.
+            </td>
+          </tr>
+        </tbody>
+        {% endif %}
+      </table>
+    </div>
+
+    <div class="panel-heading">
+      <h2 class="panel-title">Static form attributes</h2>
+    </div>
+    <div class="panel-body">
+      <table class="table table-striped table-rich" id="id_static_attrs">
+        {% if attributes_static %}
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>HStore</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for params in attributes_static %}
+          <tr>
+            <td>{{ params.name }}</td>
+            <td><span class="label {{ params.cls }}">{{ params.type }}</span></td>
+            <td>{% if params.is_custom %}
+              <pre>{{ params.hstore }}</pre>{% endif %}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+        {% else %}
+        <tbody>
+          <tr>
+            <td colspan="5" class="alert alert-warning ng-binding"><span class="fa fa-info"></span> There are no static
+              attributes defined.
+            </td>
+          </tr>
+        </tbody>
+        {% endif %}
+      </table>
+    </div>
+
+  </div>
+</div>
+
+{% endblock section_content %}
+

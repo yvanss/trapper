@@ -1,0 +1,108 @@
+{% extends "common/grid.html" %}
+
+{% block filters %}
+
+<div class="form-group form-filter">
+  <label for="status" class="control-label">Status</label>
+  <select
+     id="status"
+     class="form-control"
+     filter-text="status"
+     filter-service="filter"
+     ng-model="filters.status"
+     ng-options="option.value as option.label for option in optionList.status">
+  </select>
+</div>
+
+{% if not grid_context.hide_filter_research_project %}
+<div class="form-group form-filter-full">
+  <label for="research_projects" class="control-label">Research</label>
+  <select
+     type="text"
+     id="research_project"
+     class="select2-default"
+     multiple
+     ng-model="filters.research_projects"
+     filter-tokens="research_projects"
+     filter-service="filter">
+    {% for project in grid_context.research_projects %}
+    <option value="{{ project.0 }}">{{ project.1 }}</option>
+    {% endfor %}
+  </select>
+</div>
+{% endif %}
+
+<div class="form-group form-filter-full">
+  <label for="owners" class="control-label">Owners</label>
+  <select
+     type="text"
+     id="owners"
+     class="select2-default"
+     multiple
+     ng-model="filters.owners"
+     filter-tokens="owner"
+     filter-service="filter">
+    {% for owner in grid_context.owners %}
+    <option value="{{ owner.pk }}">{{ owner|pretty_username }}</option>
+    {% endfor %}
+  </select>
+</div>
+
+{% endblock %}
+
+{% block custom_actions %}
+
+{% if not grid_context.hide_show_on_map %}
+{% url 'geomap:map_view' as new_map_url %}
+<action-show-map data-type="collections" data-url="{{ new_map_url }}"
+                 data-field="{{ collection_context.collection_field|default:'pk' }}">
+  <select>
+    <option value="{{ new_map_url }}" selected>New map</option>
+    {% for map in grid_context.maps %}
+    <option value="{% url 'geomap:map' slug=map.slug pk=map.pk %}">{{ map }}</option>
+    {% endfor %}
+  </select>
+</action-show-map>
+{% endif %}
+
+{% endblock%}
+
+{% block custom_actions_list %}
+
+{% if not grid_context.hide_add_research_project %}
+<li>
+  <action-addto-research
+     ng-click="execute($event, '{% url "research:project_collection_add" %}', 
+'{% url "research:api-research-project-list" %}?only-updateable')">
+  </action-addto-research>
+</li>
+{% endif %}
+<li ng-class="{'disabled': !filters.owner}">
+  <action-bulk-update
+     ng-click="execute('{% url "storage:collection_bulk_update" %}')">
+  </action-bulk-update>
+</li>
+<li ng-class="{'disabled': !filters.owner}">
+  <action-remove-selected
+     ng-click="execute($event, '{{ collection_context.collection_delete_url }}')">
+  </action-remove-selected>
+</li>
+
+{% endblock %}
+
+{% block table_cells %}
+
+<td data-title="'Name'" sortable="'name'">{[{ record.name }]}</td>
+<td data-title="'Description'" sortable="'description'" ng-bind-html="record.description"></td>
+<td data-title="'Status'" sortable="'status'">{[{ record.status }]}</td>
+<td data-title="'Owner'" sortable="'owner'"><a ng-href="{[{ record.owner_profile }]}">{[{ record.owner
+    }]}</a></td>
+
+{% endblock %}
+
+{% block table_cells_extra_actions %}
+
+<action-permission ng-if="record.ask_access_data.url"
+                   ng-click="execute($event, record)"></action-permission>
+
+{% endblock %}

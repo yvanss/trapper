@@ -1,0 +1,40 @@
+{% extends "storage/index.html" %}
+{% load crispy_forms_tags %}
+
+{% block data_app %}collection::upload{% endblock data_app %}
+
+{% block content %}
+<div class="container">
+  <div class="col-md-6 col-md-offset-3">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h2 class="panel-title">Upload collection (1/{{ wizard.steps.count }})</h2>
+      </div>
+      <form method="post" action="." class="panel-body" enctype="multipart/form-data">
+        <fieldset>
+          <p>
+            To upload your collections to Trapper you will basically need to prepare two files: 1) a data package definition file (YAML) and 2) a data package with all multimedia files you want to upload (ZIP archive). To facilitate this process you can use the tools we provide in <a href="https://bitbucket.org/trapper-project/trapper-tools/src" target="_blank">this repository</a>. 
+          </p>
+        </fieldset>
+
+        {% csrf_token %}
+        {{ wizard.management_form }}
+        <fieldset>
+          <hr/>
+          {% if wizard.form.forms %}
+          {{ wizard.form.management_form }}
+          {% for form in wizard.form.forms %}
+          {% crispy form form.helper %}
+          {% endfor %}
+          {% else %}
+          {% crispy wizard.form wizard.form.helper %}
+          {% endif %}
+        </fieldset>       
+        <fieldset>
+          <button type="submit" class="btn btn-primary">Upload</button>
+        </fieldset>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

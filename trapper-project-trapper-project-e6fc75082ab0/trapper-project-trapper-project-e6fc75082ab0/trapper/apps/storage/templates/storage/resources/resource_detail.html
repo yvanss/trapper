@@ -1,0 +1,308 @@
+{% extends "storage/index.html" %}
+
+{% load staticfiles %}
+{% load tz %}
+{% load user_comments %}
+
+{% block data_app %}resource::preview{% endblock data_app %}
+
+{% block scripts_prepend %}
+<script src="{% static "storage/reqs/leaflet/leaflet-src.js" %}"></script>
+<link rel="stylesheet" href="{% static "storage/reqs/leaflet/leaflet.css" %}" />
+{% endblock scripts_prepend %}
+
+{% block section_content %}
+
+  <div class="container">
+
+    <div id="alerts" class="alerts-global">
+        <div class="alert alert-danger active rate hidden">
+            <div>
+                Server return bad response. Please refresh page and try again.
+                <button type="button" class="alert-close" data-dismiss='alert'></button>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="alerts" class="alerts-global">
+        <div class="alert alert-success active rate hidden">
+            <div>
+                Your rating has been added successfuly.
+                <button type="button" class="alert-close" data-dismiss='alert'></button>
+            </div>
+
+        </div>
+    </div>
+
+
+    <div class="nav-secondary nav-right">
+      {% if resource.can_delete %}
+        <a href="{% url "storage:resource_delete" resource.pk %}" class="btn btn-danger btn-delete"><span class="fa fa-trash-o"></span> Delete</a>
+      {% endif %}
+
+      {% if resource.can_update %}
+        <a href="{% url 'storage:resource_update' resource.pk %}" class="btn btn-default"><span class="fa fa-pencil"></span> Update</a>
+      {% endif %}
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h2 class="panel-title">{{ resource.prefixed_name }}</h2>
+          </div>
+
+          <div class="panel-body">
+            {% include "storage/resources/resource_display.html" %}
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h2 class="panel-title">Map</h2>
+            <a href="{% url "geomap:map_view" %}?action=full&locations={{ resource.deployment.location.pk }}" class="btn"><span class="fa fa-globe"></span> Large map</a>
+          </div>
+
+          <div class="panel-body">
+            <div id="location_small_map" style="width: 523px; height: 300px; text-align: center;" 
+                 latlng="{{ resource.deployment.location.latlng }}">
+              map placeholder
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h2 class="panel-title">Details</h2>
+          </div>
+
+          <ul class="list-group list-group-rich">
+            <li class="list-group-item">
+              <span class="list-group-label">Type:</span> 
+              <span class="fa fa-file-image-o"></span> {{ resource.get_resource_type_display }}
+            </li>
+            <li class="list-group-item"><span class="list-group-label">Mime type:</span> {{ resource.mime_type }}</li>
+	    <li class="list-group-item"><span class="list-group-label">Deployment:</span> 
+	      <a href="{{ resource.deployment.get_absolute_url }}">{{ resource.deployment }}</a>
+	    </li>
+            <li class="list-group-item">
+              <span class="list-group-label">Date recorded:</span> 
+              {{ resource.date_recorded_tz|date:"d.m.Y H:i:s O" }}
+	      {% if not resource.check_date_recorded %}
+	      <button class="btn btn-warning ng-scope" title="Probably a wrong date">
+		<span class="fa fa-exclamation-triangle"></span>
+	      </button>
+	      {% endif %}
+	    </li>
+            <li class="list-group-item"><span class="list-group-label">Date uploaded:</span> {{ resource.date_uploaded|date:"d.m.Y" }}</li>
+            <li class="list-group-item"><span class="list-group-label">Owner:</span> <span class="fa fa-user"></span> <a href="{{ resource.owner.userprofile.get_absolute_url }}">{{ resource.owner.username }}</a></li>
+            <li class="list-group-item"><span class="list-group-label">Managers:</span><span class="fa fa-users"></span>
+            {% for manager in resource.managers.all %}
+                <a href="{% url 'accounts:show_profile' manager.username %}">{{ manager|pretty_username }}</a>{% if not forloop.last %},{% endif %}
+            {% endfor %}
+            </li>
+            <li class="list-group-item">
+              <div class="one"> 
+                <span class="list-group-label">My rating:</span>
+                <span class="rating"></span> 
+              </div>   
+              <div class="two"> 
+                <span class="list-group-label">Avg rating:</span> 
+                <span class="average_rating"></span>
+            </div> 
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="panel panel-default">
+
+          <ul class="nav nav-tabs">
+            <li class="active"><a href="#tab-0" data-toggle="tab">Collections</a></li>
+            <li><a href="#tab-1" data-toggle="tab">Research projects</a></li>
+            <li><a href="#tab-2" data-toggle="tab">Classification projects</a></li>
+            <li><a href="#tab-3" data-toggle="tab">Resource tags</a></li>
+          </ul>
+
+          <div class="tab-content tab-fixed-short">
+            <table class="table tab-pane active" id="tab-0">
+              <thead>
+              <tr>
+                <th>Name</th>
+                <th>Actions</th>
+              </tr>
+              </thead>
+
+              <tbody>
+                {% for collection in collections %}
+                <tr>
+                  <td>
+                    <a href="{% url "storage:collection_detail" pk=collection.pk %}">{{ collection.name }}</a>
+                  </td>
+                  <td>
+                      <a href="{% url "storage:collection_detail" pk=collection.pk %}" class="btn btn-xs btn-default" data-tooltip="tooltip" title="Details"><span class="fa fa-search"></span></a>
+                    {% if collection.can_update %}
+                    <a href="{% url "storage:collection_update" pk=collection.pk %}" class="btn btn-xs btn-default" data-tooltip="tooltip" title="Update"><span class="fa fa-pencil"></span></a>
+                    {% endif %}
+                  </td>
+                </tr>
+                {% empty %}
+                  <tr>
+                    <td class="alert alert-warning ng-binding" colspan="2">
+                      <span class="fa fa-info"></span> No collections available.
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+
+            <table class="table tab-pane" id="tab-1">
+              <thead>
+              <tr>
+                <th>Name</th>
+                <th>Actions</th>
+              </tr>
+              </thead>
+
+              <tbody>
+                {% for project in research_projects %}
+                  <tr>
+                    <td>
+                      <a href="{% url "research:project_detail" pk=project.pk %}">{{ project.name }}</a>
+                    </td>
+                    <td>
+                        <a href="{% url "research:project_detail" pk=project.pk %}" class="btn btn-xs btn-default" data-tooltip="tooltip" title="Details"><span class="fa fa-search"></span></a>
+                      {% if project.can_update %}
+                        <a href="{% url "research:project_update" pk=project.pk %}" class="btn btn-xs btn-default" data-tooltip="tooltip" title="Update"><span class="fa fa-pencil"></span></a>
+                      {% endif %}
+                    </td>
+                  </tr>
+                {% empty %}
+                  <tr>
+                    <td class="alert alert-warning ng-binding" colspan="2">
+                      <span class="fa fa-info"></span> No research projects available.
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+
+            <table class="table tab-pane" id="tab-2">
+              <thead>
+              <tr>
+                <th>Name</th>
+                <th>Actions</th>
+              </tr>
+              </thead>
+
+              <tbody>
+              {% for project in classification_projects %}
+                <tr>
+                  <td>
+                    <a href="{% url "media_classification:project_detail" pk=project.pk %}">{{ project.name }}</a>
+                  </td>
+                  <td>
+                    <a href="{% url "media_classification:project_detail" pk=project.pk %}" class="btn btn-xs btn-default" data-tooltip="tooltip" title="Details"><span class="fa fa-search"></span></a>
+                    {% if project.can_update %}
+                      <a href="{% url "media_classification:project_update" pk=project.pk %}" class="btn btn-xs btn-default" data-tooltip="tooltip" title="Update"><span class="fa fa-pencil"></span></a>
+                    {% endif %}
+                  </td>
+                </tr>
+              {% empty %}
+                <tr>
+                  <td class="alert alert-warning ng-binding" colspan="2">
+                    <span class="fa fa-info"></span> No classification projects available.
+                  </td>
+                </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+
+            <div class="tab-pane panel-body" id="tab-3">
+                {% for tag in resource.tags.all %}
+								<span class="label label-default">{{ tag }}</span>
+                {% empty %}
+                  <div class="alert alert-warning ng-binding">
+                    <span class="fa fa-info"></span> No tags assigned to this resource.
+                  </div>
+                {% endfor %}
+							</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% get_comments %}
+    {% get_comment_form %}
+
+  </div>
+    <script src="{{ STATIC_URL }}jquery/jquery-2.1.0.min.js"></script>
+    <script src="{{ STATIC_URL }}js/jquery.raty.js"></script>
+    <script>
+        $('span.rating').raty({
+            click: function(score, evt) {
+                $.ajax({
+                    url: '/storage/resource/rate_resource/',
+                    type: 'POST',
+                    datatype: 'json',
+                    async: false,
+                    data: {
+                        rating: score,
+                        resource: location.href.split('/').reverse()[1],
+                        'csrfmiddlewaretoken': $("input[name=csrfmiddlewaretoken]").val()
+                    },
+                    success: function (json) {
+                        if (json.status.indexOf('OK') != -1) {
+                            $('div.alert.alert-success.active.rate').removeClass('hidden');
+
+                            $('div.alert.alert-success.active.rate').delay(6000).queue(function(){
+                                $(this).addClass('hidden').clearQueue();
+                            });
+                        }
+                    },
+                    error: function (json) {
+                        $('div.alert.alert-danger.active.rate').removeClass('hidden');
+
+                        $('div.alert.alert-danger.active.rate').delay(6000).queue(function(){
+                            $(this).addClass('hidden').clearQueue();
+                        });
+                    }
+                });
+            },
+            score     : {{ my_rating }},
+            cancel    : false,
+            cancelOff : 'cancel-off.png',
+            cancelOn  : 'cancel-on.png',
+            half      : true,
+            size      : 24,
+            starHalf  : 'star-half.png',
+            starOff   : 'star-off.png',
+            starOn    : 'star-on.png',
+            path      : '{{ STATIC_URL }}images'
+        });
+
+
+        $('span.average_rating').raty({
+            score     : {{ average_rate }},
+            cancel    : false,
+            cancelOff : 'cancel-off.png',
+            cancelOn  : 'cancel-on.png',
+            half      : true,
+            size      : 24,
+            starHalf  : 'star-half.png',
+            starOff   : 'star-off.png',
+            starOn    : 'star-on.png',
+            path      : '{{ STATIC_URL }}images',
+            readOnly: true
+        });
+    </script>
+
+{% endblock section_content %}

@@ -1,0 +1,14 @@
+{% load crispy_forms_tags %}
+
+{% if object.pk %}
+  {% url 'geomap:deployment_update' object.pk as deployment_url %}
+{% else %}
+  {% url 'geomap:deployment_create' as deployment_url  %}
+{% endif %}
+
+<form action="{{ deployment_url }}" method="post" class="panel-body" enctype="multipart/form-data">
+  {% crispy form form.helper %}
+  <fieldset>
+    <button type="submit" class="btn btn-primary">{% if object.pk %}Update{% else %}Add{% endif %} deployment</button>
+  </fieldset>
+</form>

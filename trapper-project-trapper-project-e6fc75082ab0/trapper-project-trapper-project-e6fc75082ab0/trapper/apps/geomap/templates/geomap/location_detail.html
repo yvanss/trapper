@@ -1,0 +1,62 @@
+{% extends "geomap/base.html" %}
+
+{% load staticfiles %}
+
+{% block header %}
+<script type="text/javascript" src="{% static "jquery.js" %}"></script>
+<script type="text/javascript" src="{% static "OpenLayers.js" %}"></script>
+<script type="text/javascript">
+	(function($){
+		window.onload=function(){
+		    map = new OpenLayers.Map('geomap');
+
+			var base_layer = new OpenLayers.Layer.OSM("Simple OSM Layer");
+
+			map.addControls([
+				new OpenLayers.Control.LayerSwitcher(),
+			    new OpenLayers.Control.Navigation(),
+			    new OpenLayers.Control.Attribution(),
+			    new OpenLayers.Control.PanZoomBar()
+			]);
+
+			map.addLayers([base_layer]);
+
+			var markers = new OpenLayers.Layer.Markers("Markers");
+
+			var size = new OpenLayers.Size(21,25);
+			var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
+
+			var waypoint = {
+			    lat: "{{location.coordinates.x}}",
+			    lng: "{{location.coordinates.y}}"
+			};
+			
+			markers.addMarker(new OpenLayers.Marker(new OpenLayers.LonLat(waypoint.lat, waypoint.lng).transform (
+			    new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
+			    new OpenLayers.Projection("EPSG:900913"), // to Spherical Mercator Projection
+                    map.getProjectionObject()
+			)));
+		    
+			map.addLayer(markers);
+
+            map.setCenter(
+                new OpenLayers.LonLat(waypoint.lat, waypoint.lng).transform(
+                    new OpenLayers.Projection("EPSG:4326"),
+					new OpenLayers.Projection("EPSG:900913"), // to Spherical Mercator Projection
+                    map.getProjectionObject()
+                ), 12
+            ); 
+		}
+		})(jQuery);
+</script>
+{% endblock header %}
+
+
+{% block content %}
+<div class="panel panel-primary">
+	<div class="panel-heading">Map view</div>
+	<div class="panel-body">
+		<div style="height:500px; width:100%" id="geomap"></div>
+	</div>
+</div>
+{% endblock content %}

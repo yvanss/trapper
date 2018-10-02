@@ -1,0 +1,10 @@
+{% load user_comments %}
+<div class="tab-pane" id="tab-1">
+  {% get_comments item=project show_header=False %}
+</div>
+
+<div class="tab-pane" id="tab-2">
+  {% if not is_readonly %}
+  {% get_comment_form item=project show_header=False %}
+  {% endif %}
+</div>

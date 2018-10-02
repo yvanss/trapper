@@ -1,0 +1,49 @@
+{% extends "common/grid.html" %}
+
+{% block filters %}
+
+<div class="form-group form-filter-full">
+  <label for="keywords" class="control-label">Keywords</label>
+  <select
+     type="text"
+     id="keywords"
+     class="select2-default"
+     multiple
+     ng-model="filters.keywords"
+     filter-tokens="keywords"
+     filter-service="filter">
+    {% for keyword in grid_context.keywords %}
+    <option value="{{ keyword.0 }}">{{ keyword.1 }}</option>
+    {% endfor %}
+  </select>
+</div>
+
+{% endblock %}
+
+{% block custom_actions %}
+{% endblock%}
+
+{% block custom_actions_list %}
+
+<li ng-class="{'disabled': !filters.owner}">
+  <action-remove-selected ng-click="execute($event, '{% url "research:project_delete_multiple" %}')">
+  </action-remove-selected>
+</li>
+
+{% endblock %}
+
+{% block table_cells %}
+
+<td data-title="'Name'" sortable="'name'">{[{ record.name }]}</td>
+<td data-title="'Acronym'" sortable="'name'">{[{ record.acronym }]}</td>
+<td data-title="'Keywords'">
+  <div class="tags-list">
+    <span ng-repeat="keyword in record.keywords" class="label label-default">{[{ keyword }]}</span>
+  </div>
+</td>
+
+{% endblock %}
+
+{% block table_cells_extra_actions %}
+{% endblock %}
+

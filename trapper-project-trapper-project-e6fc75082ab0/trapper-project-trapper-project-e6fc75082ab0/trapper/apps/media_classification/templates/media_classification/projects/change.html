@@ -1,0 +1,31 @@
+{% extends "media_classification/index.html" %}
+
+{% load common_tags %}
+{% load crispy_forms_tags %}
+
+{% block data_app %}classification::create{% endblock data_app %}
+{% block ng_app %}ng-app="trapperGrid"{% endblock ng_app %}
+
+{% block section_content %}
+    <div class="container">
+
+        <div class="col-md-8 col-md-offset-2">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h2 class="panel-title">{% if object %}Update{% else %}Add{% endif %} classification project</h2>
+                </div>
+
+
+                <form action="." class="panel-body" method="post">
+                    {% crispy form form.helper %}
+                    <fieldset>
+                        <button type="submit" class="btn btn-primary">{% if object %}Update{% else %}Add{% endif %}
+                            classification project
+                        </button>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </div>
+
+{% endblock section_content %}

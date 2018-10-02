@@ -1,0 +1,59 @@
+{% extends 'index.html' %}
+
+{% block content %}
+
+<div class="panel panel-default panel-dashboard"
+     xmlns="http://www.w3.org/1999/html">
+  {% include 'accounts/dashboard_includes/messages.html' %}
+</div>
+
+<div class="row">
+  <div class="col-md-6">
+    <div class="panel panel-default panel-dashboard">
+      {% include 'accounts/dashboard_includes/research_projects.html' %}
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="panel panel-default panel-dashboard">
+      {% include 'accounts/dashboard_includes/classification_projects.html' %}
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-6">
+    <div class="panel panel-default panel-dashboard">
+      {% include 'accounts/dashboard_includes/data_packages.html' %}
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="panel panel-default panel-dashboard label-fixed-widths">
+      {% include 'accounts/dashboard_includes/celery.html' %}
+    </div>
+  </div>
+</div>
+
+<div class="container text-center">
+    {% for button in buttons %}
+        <a class="btn btn-lg btn-default" {% if button.url %}target="_blank"{% endif %} title="{{ button.name }}" href="{% if button.url %}{{ button.url }}{% elif button.href %}/{{ button.href }}/{% endif %}"><span class="fa-{{ button.css_class }} fa-lg"></span> {{ button.name }}</a>
+    {% endfor %}
+</div>
+
+<div class="modal fade" id="modal-1" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">
+          <span class="fa fa-remove"></span>
+        </button>
+        <h3 class="modal-title text-primary"><span class="fa fa-spin fa-refresh"></span> Task is running</h3>
+      </div>
+      <div class="modal-body">
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}

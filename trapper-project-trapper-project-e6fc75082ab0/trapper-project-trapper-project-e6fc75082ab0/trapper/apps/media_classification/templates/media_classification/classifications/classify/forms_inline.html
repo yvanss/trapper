@@ -1,0 +1,104 @@
+{% load common_tags %}
+
+{% if static_form or dynamic_form %}
+  <form action="." method="post" class="form-classificator-rows">
+    {% csrf_token %}
+    <fieldset>
+      <div class="panel panel-default">
+        {% if static_form %}
+          <div class="panel-heading">
+            <h2 class="panel-title">Static attributes</h2>
+          </div>
+
+          <table class="table">
+            <thead>
+            <tr>
+              {% for field in static_form %}
+                <th {% if field.field.required %}class="form-required"{% endif %}>
+                  <span>{{ field.label }}</span>
+                </th>
+              {% endfor %}
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr>
+              {% for field in static_form  %}
+                <td>{{ field|as_crispy_non_label_field }}</td>
+              {% endfor %}
+            </tr>
+            </tbody>
+          </table>
+        {% endif %}
+
+        {% if dynamic_form %}
+          <div class="panel-heading">
+            <h2 class="panel-title">Dynamic attributes</h2>
+          </div>
+
+          <table class="table table-repeatable" data-name="form">
+            <thead>
+            <tr>
+              {% for field in dynamic_form_template %}
+              <th {% if field.field.required %}class="form-required"{% endif %}>
+                <span>{{ field.label }} {% if field.field.required %}*{% endif %}</span>
+              </th>
+              {% endfor %}
+              <th>Action</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            {% for form in dynamic_form %}
+              <tr>
+                {% for field in form  %}
+                  <td>{{ field|as_crispy_non_label_field }}</td>
+                {% endfor %}
+                <td>
+                  {% if not is_readonly %}
+                  <button type="button" class="btn btn-danger btn-remove-row pull-right">
+                    <span class="fa fa-remove"></span>
+                  </button>
+                  {% endif %}
+                </td>
+              </tr>
+            {% endfor %}
+            </tbody>
+            
+            {% if not is_readonly %}
+            <tfoot>
+              <tr>
+                <td colspan="100%">
+                  <button type="button" class="btn btn-success btn-add-row pull-right"><span class="fa fa-plus"></span></button>
+                </td>
+              </tr>
+            </tfoot>
+            {% endif %}
+
+            {{ dynamic_form.management_form }}
+          </table>
+        {% endif %}
+        <div class="panel-footer">
+          {% include 'media_classification/classifications/classify/form_button_box.html' %}
+        </div>
+      </div>
+    </fieldset>
+  </form>
+  <div class="hidden">
+    <table class="table">
+      <thead>
+      </thead>
+      <tbody>
+        <tr id="dynamic-form-row-template">
+          {% for field in dynamic_form_template  %}
+          <td>{{ field|as_crispy_non_label_field }}</td>
+          {% endfor %}
+          <td>
+            <button type="button" class="btn btn-danger btn-remove-row pull-right">
+              <span class="fa fa-remove"></span>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+  </div>
+{% endif %}

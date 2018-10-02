@@ -1,0 +1,224 @@
+{% extends "common/grid.html" %}
+
+{% block filters %}
+
+<div class="form-group form-filter">
+  <label for="type" class="control-label">Type</label>
+  <select
+     id="type"
+     class="form-control"
+     filter-text="resource_type"
+     filter-service="filter"
+     ng-model="filters.resource_type"
+     ng-options="option.value as option.label for option in optionList.media">
+  </select>
+</div>
+
+<div class="form-group form-filter form-datepicker">
+  <label for="date-uploaded" class="control-label">Upl. date</label>
+  
+  <div class="input-group input-daterange"
+       filter-daterange="filters.udate"
+       filter-name="'udate'"
+       filter-service="filter">
+    <input
+       type="text"
+       class="form-control"
+       placeholder="from"
+       >
+    
+    <span class="input-group-addon">
+      <span class="fa fa-calendar"></span>
+    </span>
+
+    <input
+       type="text"
+       class="form-control"
+       placeholder="to"
+       >
+  </div>
+</div>
+
+<div class="form-group form-filter form-datepicker">
+  <label class="control-label">Rec. date</label>
+  
+  <div class="input-group input-daterange"
+       filter-daterange="filters.rdate"
+       filter-name="'rdate'"
+       filter-service="filter">
+    <input
+       type="text"
+       class="form-control"
+       placeholder="from"
+       >
+          
+    <span class="input-group-addon">
+      <span class="fa fa-calendar"></span>
+    </span>
+    
+    <input
+       type="text"
+       class="form-control"
+            placeholder="to"
+       >
+  </div>
+</div>
+
+<div class="form-group form-filter form-datepicker">
+  <label class="control-label">Rec. time</label>
+  
+  <div class="input-group input-daterange"
+       filter-timerange="filters.rtime"
+       filter-name="'rtime'"
+       filter-service="filter">
+    <input
+       type="text"
+       class="form-control"
+       placeholder="from"
+       >
+
+    <span class="input-group-addon">
+      <span class="fa fa-clock-o"></span>
+    </span>
+
+    <input
+       type="text"
+       class="form-control"
+       placeholder="to"
+       >
+  </div>
+</div>
+
+
+<div class="form-group form-filter-full">
+  <label for="tags" class="control-label">Tags</label>
+  <select
+     type="text"
+     id="tags"
+     class="select2-default"
+     multiple
+     ng-model="filters.tags"
+     filter-tokens="tags"
+     filter-service="filter">
+    {% for tag in grid_context.tags %}
+    <option value="{{ tag.0 }}">{{ tag.1 }}</option>
+    {% endfor %}
+  </select>
+</div>
+
+{% if not grid_context.hide_filter_collection %}
+<div class="form-group form-filter-full">
+  <label for="collections" class="control-label">Collections</label>
+  <select
+     type="text"
+     id="collections"
+     class="select2-default"
+     multiple
+     ng-model="filters.collections"
+     filter-tokens="collections"
+     filter-service="filter">
+    {% for collection in grid_context.collections %}
+    <option value="{{ collection.0 }}">{{ collection.1 }}</option>
+    {% endfor %}
+  </select>
+</div>
+{% endif %}
+
+{% if user.is_authenticated %}
+<div class="form-group form-filter-full">
+  <label for="deployments" class="control-label">Deployments</label>
+  <select
+     type="text"
+     id="deployments"
+     class="select2-default"
+     multiple
+     ng-model="filters.deployments"
+     filter-tokens="deployments"
+     filter-service="filter">
+    {% for deployment in grid_context.deployments %}
+    <option value="{{ deployment.0 }}">{{ deployment.1 }}</option>
+    {% endfor %}
+  </select>
+</div>
+
+{% endif %}
+
+{% endblock %}
+
+{% block custom_actions %}
+
+{% if user.is_authenticated and not grid_context.hide_create_collection %}
+<action-create-collection ng-disabled="!data.selectedCounter" ng-click="execute('{% url "storage:collection_create" %}')"></action-create-collection>
+{% endif %}
+
+{% url 'geomap:map_view' as new_map_url %}
+<action-show-map data-type="resources" data-url="{{ new_map_url }}" data-field="pk">
+  <select>
+    <option value="{{ new_map_url }}" selected>New map</option>
+    {% for map in resource_context.maps %}
+    <option value="{% url 'geomap:map' slug=map.slug pk=map.pk %}">{{ map }}</option>
+    {% endfor %}
+  </select>
+</action-show-map>
+
+{% endblock%}
+
+{% block custom_actions_list %}
+<li>
+  <action-addto-collection ng-click="execute($event, '{% url "storage:collection_append" %}', '{% url "storage:api-collection-append-list" %}')">
+  </action-addto-collection>
+</li>
+
+{% if not resource_context.hide_change_actions %}
+<li ng-class="{'disabled': !filters.owner}">
+  <action-bulk-update 
+     ng-click="execute('{% url "storage:resource_bulk_update" %}')">
+  </action-bulk-update>
+</li>
+<li ng-class="{'disabled': !filters.owner}">
+  <action-define-prefix
+     ng-click="execute($event, '{% url "storage:resource_define_prefix" %}')">
+  </action-define-prefix>
+</li>
+<li ng-class="{'disabled': !filters.owner}">
+  <action-remove-selected
+     ng-click="execute($event, '{% url "storage:resource_delete_multiple" %}')">
+  </action-remove-selected>
+</li>
+{% endif %}
+
+<li>
+  <action-generate-data-package ng-click="execute($event, '{% url "storage:resource_data_package" %}')">
+  </action-generate-data-package>
+</li>
+
+{% if object.pk %}
+<li>
+  <action-unlink-selected
+     ng-click="execute($event, '{% url "storage:collection_resource_delete" object.pk %}')">
+  </action-unlink-selected>
+</li>
+{% endif %}
+
+{% endblock %}
+
+{% block table_cells %}
+
+<td data-title="'Thumbnail'"><action-media ng-click="execute($event, record)"><img ng-src="{[{ record.thumbnail_url }]}"></action-media></td>
+<td data-title="'Type'" sortable="'resource_type'" ng-bind-html="record.resource_type | typesIcon"></td>
+<td data-title="'Name'" sortable="'name'"><span class="fixed-text">{[{ record.name }]}</span></td>
+<td data-title="'Classification tags'">
+  <div class="tags-list">
+    <span ng-repeat="tag in record.tags" class="label label-default">{[{ tag }]}</span>
+  </div>
+</td>
+<td data-title="'Date recorded'" sortable="'date_recorded'">{[{ record.date_recorded | dateTZ: dateFormat.table }]}</td>
+<td data-title="'Owner'" sortable="'owner'"><a ng-href="{[{ record.owner_profile }]}">{[{ record.owner }]}</a></td>
+
+{% endblock %}
+
+{% block table_cells_extra_actions %}
+{% if user.is_authenticated %}
+<action-warning ng-if="record.date_recorded_correct===false" ng-click="execute($event, 'The date when this resource was recorded does not fall within a period of deployment. Better check it out.', record)"></action-warning>
+{% endif %}
+{% endblock %}

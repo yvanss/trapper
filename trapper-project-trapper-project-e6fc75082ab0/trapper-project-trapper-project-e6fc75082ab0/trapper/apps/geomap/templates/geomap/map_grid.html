@@ -1,0 +1,52 @@
+{% extends "common/grid.html" %}
+
+{% block filters %}
+
+<div class="form-group form-filter-full">
+  <label for="owners" class="control-label">Owners</label>
+  <select
+     type="text"
+     id="owners"
+     class="select2-default"
+     multiple
+     ng-model="filters.owners"
+     filter-tokens="owner"
+     filter-service="filter">
+    {% for owner in grid_context.owners %}
+    <option value="{{ owner }}">{{ owner }}</option>
+    {% endfor %}
+  </select>
+</div>
+
+{% endblock %}
+
+{% block custom_actions %}
+{% endblock %}
+
+{% block custom_actions_list %}
+
+<li>
+  <action-remove-selected ng-click="execute($event, '{% url "geomap:map_delete_multiple" %}')">
+</action-remove-selected>
+</li>
+
+{% endblock %}
+
+{% block table_cells %}
+
+<td data-title="'Map name'" sortable="'slug'">{[{ record.slug }]}</td>
+<td data-title="'Description'" sortable="'description'">{[{ record.description }]}</td>
+<td data-title="'Owner'" sortable="'owner'"><a ng-href="{[{ record.owner_profile }]}">{[{ record.owner }]}</a></td>
+<td data-title="'Modified'" sortable="'modified_at'">{[{ record.modified_at | date: dateFormat.table }]}</td>
+
+{% endblock %}
+
+{% block table_cells_actions %}
+
+<td data-title="'Actions'">
+  <action-map ng-if="record.detail_data" ng-click="execute($event, record)"></action-map>
+  <action-remove ng-if="record.delete_data" ng-click="execute($event, record)"></action-remove>
+</td>
+
+{% endblock %}
+

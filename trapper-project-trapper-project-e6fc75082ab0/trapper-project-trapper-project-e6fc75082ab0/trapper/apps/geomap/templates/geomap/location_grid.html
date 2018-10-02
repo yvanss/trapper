@@ -1,0 +1,123 @@
+{% extends "common/grid.html" %}
+
+{% block filters %}
+
+<div class="form-group form-filter-full">
+  <label for="owners" class="control-label">Owners</label>
+  <select
+     type="text"
+     id="owners"
+     class="select2-default"
+     multiple
+     ng-model="filters.owners"
+     filter-tokens="owner"
+     filter-service="filter">
+    {% for owner in grid_context.owners %}
+    <option value="{{ owner.0 }}">{{ owner.1 }}</option>
+    {% endfor %}
+  </select>
+</div>
+
+<div class="form-group form-filter-full">
+  <label for="research_projects" class="control-label">Research</label>
+  <select
+     type="text"
+     id="research_projects"
+     class="select2-default"
+     multiple
+     ng-model="filters.research_project"
+     filter-tokens="research_project"
+     filter-service="filter">
+    {% for project in grid_context.research_projects %}
+    <option value="{{ project.0 }}">{{ project.1 }}</option>
+    {% endfor %}
+  </select>
+</div>
+
+<div class="form-group form-filter-full">
+  <label for="country" class="control-label">Country</label>
+  <select
+     type="text"
+     id="country"
+     class="select2-default"
+     multiple
+     ng-model="filters.country"
+     filter-tokens="country"
+     filter-service="filter">
+    {% for country in grid_context.countries %}
+    <option value="{{ country }}">{{ country }}</option>
+    {% endfor %}
+  </select>
+</div>
+
+{% endblock %}
+
+{% block custom_actions %}
+
+{% url 'geomap:map_view' as new_map_url %}
+<action-show-map data-type="locations" data-url="{{ new_map_url }}" data-field="pk">
+  <select>
+    <option value="{{ new_map_url }}" selected>New map</option>
+    {% for map in grid_context.maps %}
+    <option value="{% url 'geomap:map' slug=map.slug pk=map.pk %}">{{ map }}</option>
+    {% endfor %}
+  </select>
+</action-show-map>
+
+<a href="{% url "geomap:location_import" %}" 
+   class="btn btn-default" role="button">
+  <span class="fa fa-upload"></span> Import
+</a>
+<action-export-with-filters ng-click="execute('{% url "geomap:api-location-export" %}')">
+</action-export-with-filters>
+
+{% endblock%}
+
+{% block custom_actions_list %}
+
+<li ng-class="{'disabled': !filters.owner}">
+  <action-bulk-create-deployments ng-disabled="!data.selectedCounter" ng-click="execute('{% url "geomap:deployment_bulk_create" %}')"></action-bulk-create-deployments>
+</li>
+<li ng-class="{'disabled': !filters.owner}">
+  <action-bulk-update
+     ng-click="execute('{% url "geomap:location_bulk_update" %}')">
+  </action-bulk-update>
+</li>
+<li ng-class="{'disabled': !filters.owner}">
+  <action-remove-selected ng-click="execute($event, '{% url "geomap:location_delete_multiple" %}')"></action-remove-selected>
+</li>
+
+{% endblock %}
+
+{% block table_cells %}
+
+<td data-title="'ID'" sortable="'location_id'">{[{ record.location_id }]}</td>
+<td data-title="'Research project'" sortable="'name'">{[{ record.research_project }]}</td>
+<!-- <td data-title="'Name'" sortable="'name'">{[{ record.name }]}</td> -->
+<td data-title="'Owner'" sortable="'owner'"><a ng-href="{[{ record.owner_profile }]}">{[{ record.owner }]}</a></td>
+<td data-title="'Lat / Lon'" sortable="'coordinates'">{[{ record.coordinates }]}</td>
+<td data-title="'Timezone'" sortable="'timezone'">{[{ record.timezone }]}</td>
+<td data-title="'Country'" sortable="'country'">{[{ record.country }]}</td>
+<td data-title="'State'" sortable="'state'">{[{ record.state }]}</td>
+<td data-title="'County'" sortable="'county'">{[{ record.county }]}</td>
+<td data-title="'City'" sortable="'city'">{[{ record.city }]}</td>
+<td data-title="'Is public'" sortable="'is_public'">{[{ record.is_public }]}</td>
+
+{% endblock %}
+
+{% block table_cells_actions %}
+
+{% if not grid_context.hide_detail %}
+<action-details ng-if="record.detail_data" ng-click="execute($event, record)"></action-details>
+{% endif %}
+{% if not grid_context.hide_update %}
+<action-update-location ng-if="record.update_data" ng-click="execute($event, record)"></action-update-location>
+{% endif %}
+{% if not grid_context.hide_delete %}
+<action-remove ng-if="record.delete_data" ng-click="execute($event, record)"></action-remove>
+{% endif %}
+
+{% endblock %}
+
+
+

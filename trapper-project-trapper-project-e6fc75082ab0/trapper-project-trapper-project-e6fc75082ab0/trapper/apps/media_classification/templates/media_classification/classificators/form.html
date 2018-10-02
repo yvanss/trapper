@@ -1,0 +1,36 @@
+{% extends 'media_classification/index.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block data_app %}classificator::create{% endblock data_app %}
+
+{% block section_content %}
+
+    <div class="container">
+        <form class="panel panel-default" action="" name="attr-form" method="post">
+            <div class="panel-heading">
+                <h2 class="panel-title">{% if classificator %}Update{% else %}Add{% endif %} classificator</h2>
+            </div>
+
+            <div class="row panel-body">
+
+                <div class="col-md-12 form-group form-required">
+                    {% crispy classificator_form classificator_form.helper %}
+                </div>
+
+                <div class="col-md-8">
+                    {% include 'media_classification/classificators/form_left.html' %}
+                </div>
+
+                <div class="col-md-4">
+                    {% include 'media_classification/classificators/form_right.html' %}
+                </div>
+            </div>
+
+            <div class="panel-footer">
+                <button type="submit" name="submit" value="change" class="btn btn-success">Add/Update classificator
+                </button>
+            </div>
+        </form>
+    </div>
+{% endblock section_content %}

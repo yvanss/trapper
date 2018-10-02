@@ -1,0 +1,122 @@
+{% extends "research/index.html" %}
+
+{% block data_app %}research::preview{% endblock data_app %}
+
+{% block ng_app %}ng-app="trapperGrid"{% endblock ng_app %}
+
+{% block section_content %}
+  <div class="container">
+    <h2>Research project: {{ research_project.name }}</h2>
+    <h3>Acronym: {{ research_project.acronym|default:"-" }}</h3>
+
+  <div class="nav-secondary nav-right">
+    {% if research_project.can_delete %}
+      <a href="{% url "research:project_delete" research_project.pk %}" class="btn btn-danger btn-delete"><span class="fa fa-trash-o"></span> Delete</a>
+    {% endif %}
+
+    {% if research_project.can_update %}
+      <a href="{% url 'research:project_update' research_project.pk %}" class="btn btn-default"><span class="fa fa-pencil"></span> Update</a>
+      <a href="{% url 'media_classification:project_create' %}?selected={{ research_project.pk }}" class="btn btn-success">Add classification project</a>
+    {% endif %}
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h2 class="panel-title">Abstract</h2>
+          </div>
+
+          <div class="panel-body">
+            <p>{{ research_project.abstract|safe }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h2 class="panel-title">Methods</h2>
+          </div>
+
+          <div class="panel-body">
+            <p>{{ research_project.methods|safe }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h2 class="panel-title">Keywords</h2>
+      </div>
+
+      <div class="panel-body">
+        <div class="tags-list">
+            {% for key in research_project.keywords.all %}
+                <span class="label label-default ng-binding ng-scope">{{ key }}</span>
+            {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <div class="panel panel-default">
+      <div class="panel-heading collapsable">
+        <h2 class="panel-title">Description</h2>
+      </div>
+
+      <div class="panel-body">
+        <p>{{ research_project.description|safe }}</p>
+      </div>
+    </div>
+
+    <div class="panel panel-default">
+      <div class="panel-heading collapsable">
+        <h2 class="panel-title">Users in the project</h2>
+      </div>
+      {% with research_project.get_user_roles_with_profiles as project_roles %}
+      {% if project_roles %}
+      <table class="table table-striped table-rich">
+        <thead>
+        <tr>
+          <th>User</th>
+          <th>Role</th>
+          <th>E-mail</th>
+          <th>Institution</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        {% for role in project_roles %}
+          {% with role.user.userprofile as user_profile %}
+        <tr>
+          <td>
+            <a href="{% url 'accounts:show_profile' role.user %}"><img src="{{ user_profile.avatar_url }}" alt="{{ role.user.username }}" class="img-thumbnail avatar-small" style="display:inline"> {{ role.user|pretty_username }} </a>
+          </td>
+          <td>{{ role.get_name_display }}</td>
+          <td><a href="mailto:{{ role.user.email|default:"" }}">{{ role.user.email|default:"" }}</a></td>
+          <td>{{ user_profile.institution|default:"" }}</td>
+        </tr>
+          {% endwith %}
+        {% endfor %}
+
+        </tbody>
+      </table>
+      {% endif %}
+      {% endwith %}
+    </div>
+  </div>
+
+  {% if research_project.can_view %}
+  <h2 class="container">Collections</h2>
+  {% with grid_context=collection_context %}
+  {% include 'research/project_detail_collection_grid.html' %}
+  {% endwith %}
+
+  <h2 class="container">Classification projects</h2>
+  {% with grid_context=classification_project_context %}
+  {% include 'media_classification/projects/grid.html' %}
+  {% endwith %}
+  {% endif %}
+
+{% endblock section_content %}

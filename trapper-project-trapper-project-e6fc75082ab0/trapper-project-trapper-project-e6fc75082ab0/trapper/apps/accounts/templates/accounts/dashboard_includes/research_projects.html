@@ -1,0 +1,42 @@
+<div class="panel-heading">
+    <h2 class="panel-title">Research projects</h2>
+</div>
+
+
+{% if research_projects %}
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Role</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        {% for project in research_projects %}
+            {% url 'research:project_detail' project.pk as project_url %}
+            <tr>
+                <td><a href="{{ project_url }}">{{ project.acronym }}</a></td>
+                <td>{% for role in project.get_user_roles %}{{ role }}{% if not forloop.last %},
+                {% endif %}{% endfor %}</td>
+                <td>
+                    <a href="{{ project_url }}" class="btn btn-xs btn-default" data-tooltip="tooltip"
+                       title="Details"><span class="fa fa-search"></span></a>
+                    {% if project.can_update %}
+                        <a href="{% url 'research:project_update' project.pk %}" class="btn btn-xs btn-default"
+                           data-tooltip="tooltip" title="Update"><span class="fa fa-pencil"></span></a>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <div class="alert alert-warning ng-binding"><span class="fa fa-info"></span> You have no research projects.</div>
+{% endif %}
+
+<div class="panel-footer">
+    <a href="{% url 'research:project_list' %}" class="btn btn-default btn-sm">More <span
+            class="fa fa-angle-double-right"></span></a>
+</div>

@@ -1,0 +1,44 @@
+{% extends "storage/index.html" %}
+{% load crispy_forms_tags %}
+
+{% block data_app %}collection::upload{% endblock data_app %}
+
+{% block content %}
+<div class="container">
+  <div class="col-md-6 col-md-offset-3">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h2 class="panel-title">Upload collection (2/{{ wizard.steps.count }})</h2>
+      </div>
+
+      <form method="post" action="" class="panel-body" enctype="multipart/form-data">
+        <p>Please select either a new file to upload or choose a data package
+          that has already been uploaded to the server.</p>
+        {% csrf_token %}
+        {{ wizard.management_form }}
+        <fieldset>
+          <hr/>
+          {% if wizard.form.forms %}
+          {{ wizard.form.management_form }}
+          {% for form in wizard.form.forms %}
+          {% crispy form form.helper %}
+          {% endfor %}
+          {% else %}
+          {% crispy wizard.form wizard.form.helper %}
+          {% endif %}
+        </fieldset>
+
+        <fieldset>
+          <button type="submit" class="btn btn-primary">Upload</button>
+        </fieldset>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+
+
+
+
+

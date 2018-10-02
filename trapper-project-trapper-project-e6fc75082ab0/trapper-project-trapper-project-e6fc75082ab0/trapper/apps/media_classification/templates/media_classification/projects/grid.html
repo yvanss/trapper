@@ -1,0 +1,52 @@
+{% extends "common/grid.html" %}
+
+{% block filters %}
+
+<div class="form-group form-filter">
+  <label for="status" class="control-label">Progress</label>
+  <select
+     id="status"
+     class="form-control"
+     filter-text="status"
+     filter-service="filter"
+     ng-model="filters.status"
+     ng-options="option.value as option.label for option in optionList.progress">
+  </select>
+</div>
+
+{% endblock %}
+
+{% block custom_actions %}
+{% endblock%}
+
+{% block custom_actions_list %}
+
+<li ng-class="{'disabled': !filters.owner}">
+  <action-remove-selected ng-click="execute($event, '{% url "media_classification:project_delete_multiple" %}')">
+  </action-remove-selected>
+</li>
+
+{% endblock%}
+
+{% block exclude_column_headers %}
+{% if grid_context.hide_research_project_col %}
+ng-if="column != 'Research project'"
+{% endif %}
+{% endblock %}
+
+{% block table_cells %}
+
+<td data-title="'Name'" sortable="'name'">{[{ record.name }]}</td>
+
+{% if not grid_context.hide_research_project_col %}
+<td data-title="'Research project name'" sortable="'research_project'">{[{ record.research_project }]}</td>
+{% endif %}
+<td data-title="'Status'" sortable="'status'">{[{ record.status }]}</td>
+
+{% endblock %}
+
+{% block table_cells_extra_actions %}
+
+<action-warning ng-if="!record.classificator" ng-click="execute($event, 'This classification project has no classificator assigned', record)"></action-warning>
+
+{% endblock %}

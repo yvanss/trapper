@@ -1,0 +1,20 @@
+[
+{
+  "pk": 1, 
+  "model": "variables.variable", 
+  "fields": {
+    "namespace": "global", 
+    "name": "app-title", 
+    "value": "OBJ:VlRyYXBwZXIKcDEKLg=="
+  }
+},
+{
+  "pk": 2, 
+  "model": "variables.variable", 
+  "fields": {
+    "namespace": "global", 
+    "name": "app-welcome", 
+    "value": "OBJ:VjxoMj5XZWxjb21lIHRvIFRyYXBwZXIhPC9oMj4NXHUwMDBhPGRpdiBpZD0iYWxlcnRzIiBjbGFzcz0iYWxlcnRzLWdsb2JhbCI-DVx1MDAwYSAgPGRpdiBjbGFzcz0iYWxlcnQgYWxlcnQtaW5mbyI-PGRpdj48c3BhbiBjbGFzcz0iZmEgZmEtaW5mbyI-PC9zcGFuPiBXZWxjb21lIGluIFRyYXBwZXI8L2Rpdj48L2Rpdj4NXHUwMDBhPC9kaXY-CnAxCi4="
+  }
+}
+]

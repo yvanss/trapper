@@ -1,0 +1,22 @@
+{% if resource.resource_type == "V" %}
+<video id="videoPlayer" style="width: 520px; height: 298px;" class="video-js" controls preload="auto">
+  <source src="{{resource.get_url}}" type="{{resource.mime_type}}" />
+  {% if resource.extra_file %}<source src="{{resource.get_extra_url}}" type="{{resource.extra_mime_type}}" />{% endif %}
+</video>
+
+{% elif resource.resource_type == "A" %}
+<audio controls>
+	<source src="{{resource.file.url}}" type="{{resource.mime_type}}" />
+  {% if resource.extra_file %}<source src="{{resource.get_extra_url}}" type="{{resource.extra_mime_type}}" />{% endif %}
+</audio>
+{% elif resource.resource_type == "I" %}
+  <a href="{{ resource.get_url }}" data-media="image"><img src="{{ resource.get_url }}" alt="" style="max-width: 520px; max-height: 300px;"></a>
+{% else %}
+Unrecognized resource type
+{% endif %}
+<p>
+  <a href="{{ resource.get_url_original }}" target="_blank">Original file</a>
+  {% if resource.extra_file %}
+  | <a href="{{ resource.get_extra_url }}" target="_blank">Original extra file</a>
+  {% endif %}
+</p>
